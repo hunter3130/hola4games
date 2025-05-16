@@ -1,0 +1,301 @@
+/* تنسيق الخطوط والخلفية */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f8ff;
+  direction: rtl;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.main-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(65vh - -100px); /* طرح ارتفاع الـ navbar */
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 775px;
+  height: auto;
+  aspect-ratio: 1.4 / 1; /* نسبة الطول للعرض للحفاظ على الشكل العام */
+  margin: auto;
+  background: #b79393;
+  overflow: hidden; /* لمنع أي تجاوز */
+}
+
+/* الأعلى */
+.top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: steelblue;
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+}
+
+/* الأسفل */
+.bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: steelblue;
+  clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+}
+
+/* اليسار */
+.left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 125px;
+  height: 100%;
+  background-color: darkred;
+  clip-path: polygon(0 0, 100% 18%, 100% 82%, 0% 100%);
+}
+
+/* اليمين */
+.right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 165px;
+  height: 100%;
+  background-color: darkred;
+  clip-path: polygon(0% 0, 100% 18%, 100% 82%, 0% 100%);
+  transform: scaleX(-1); /* لعكس الشكل ليصير زاوية للداخل */
+}
+
+/* الشبكة الرئيسية */
+.hex-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  margin-right: -10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+/* صفوف الخلايا */
+.hex-row {
+  display: flex;
+  justify-content: center;
+  margin-left: -56px;
+  margin-bottom: -27px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.hex-row.offset {
+  margin-left: 70px; /* إزاحة للصفوف الفردية */
+}
+
+/* الخلايا السداسية */
+.hex {
+  margin-left: -17px;
+  width: 144px;
+  height: 121px;
+  background: #e9e9e9;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  clip-path: polygon(
+    50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%
+  );
+  cursor: pointer;
+  border: 2px solid #e0e0e0; /* مسافة بسيطة بين الخلايا */
+  box-sizing: border-box;
+  transition: background-color 0.3s;
+  flex-shrink: 0; /* منع تصغير الخلايا */
+}
+
+.hex:hover {
+  background-color: #f0b512;
+}
+
+.hex.locked {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* التحكم */
+.controls {
+  margin-top: -45px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* عرض نتيجة البازر */
+#buzzerResult {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* الشريط العلوي */
+.navbar {
+  background-color: #2c3e50;
+  padding: 15px;
+  color: white;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome {
+  font-size: 18px;
+}
+
+.logout-btn {
+  color: white;
+  text-decoration: none;
+  background-color: #e74c3c;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+/* النوافذ المنبثقة */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border-radius: 15px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+
+
+/* ----------------------------------------- */
+/* استجابة الشاشة الصغيرة */
+@media (max-width: 768px) {
+  .main-wrapper {
+    height: auto;
+    padding: 10px;
+  }
+
+  .container {
+    width: 100%;
+    height: auto;
+    padding: 20px 10px;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .hex-grid {
+    margin: 0 auto;
+    margin-left: 0;
+  }
+
+  .hex-row {
+    margin-left: 0 !important;
+    margin-bottom: 1vw;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow: visible;
+  }
+
+  .hex-row.offset {
+    margin-left: 36px !important; /* تقليل الإزاحة للصفوف الفردية */
+  }
+
+  .hex {
+    margin-left: 0 !important;
+    width: clamp(50px, 18vw, 90px);
+    height: calc(clamp(50px, 18vw, 90px) * 0.866);
+    font-size: clamp(14px, 3vw, 18px);
+  }
+
+  .controls {
+    flex-direction: column;
+    margin-top: 15px;
+    gap: 10px;
+  }
+
+  .controls button {
+    width: 90%;
+  }
+
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .navbar .welcome-msg,
+  .navbar .logout-link {
+    width: 100%;
+  }
+}
+.win-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 30px 50px;
+  border-radius: 20px;
+  display: none;
+  z-index: 9999;
+  text-align: center;
+}

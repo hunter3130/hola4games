@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>صفحة الأدمن</title>
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+  <h2>لوحة المشرف</h2>
+
+  <button onclick="startQuestion()">ابدأ سؤال</button>
+  <p id="buzzer-result">— لم يضغط أحد بعد —</p>
+
+  <script>
+    const socket = io();
+
+    function startQuestion() {
+      socket.emit('start_question', { letter: "أ", question: "سؤال الحرف أ" });
+      document.getElementById('buzzer-result').textContent = 'بانتظار المتسابقين...';
+    }
+
+    socket.on('buzzer_result', data => {
+      document.getElementById('buzzer-result').textContent = `🚨 أول من ضغط: ${data.team}`;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>متسابق</title>
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+  <h2>صفحة المتسابق</h2>
+
+  <p id="question" style="font-weight: bold;"></p>
+  <button id="buzzBtn" onclick="buzz()">🚨 أنا أول!</button>
+  <p id="status"></p>
+
+  <script>
+    const socket = io();
+    const team = prompt("ادخل اسم الفريق");
+
+    socket.on('show_question', data => {
+      document.getElementById('question').textContent = `حرف: ${data.letter} - ${data.question}`;
+      document.getElementById('buzzBtn').disabled = false;
+      document.getElementById('status').textContent = '';
+    });
+
+    socket.on('buzzer_result', data => {
+      document.getElementById('buzzBtn').disabled = true;
+      if (data.team === team) {
+        document.getElementById('status').textContent = '✅ أنت أول من ضغط!';
+      } else {
+        document.getElementById('status').textContent = `❌ سبقك الفريق: ${data.team}`;
+      }
+    });
+
+    function buzz() {
+      socket.emit('buzz', { team: team });
+      document.getElementById('buzzBtn').disabled = true;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<meta charset="UTF-8">
+<title>Hex Game</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/hex.css') }}">
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<div id="winMessage" class="win-message"></div>
+
+<div class="content">
+  <h1 style="font-size: 32px; margin-bottom: -160px; margin-top: -60px;">🎮 لعبة حروف ابو وســـام 🎮</h1>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 130px;">
+    <div style="background-color: #ffdddd; border: 2px solid #ff4d4d; padding: 10px 20px; border-radius: 10px; font-weight: bold;">
+      🟥 الفريق الأول
+    </div>
+    <div style="background-color: #ddeeff; border: 2px solid #3399ff; padding: 10px 20px; border-radius: 10px; font-weight: bold;">
+      🟦 الفريق الثاني
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div class="container">
+      <div class="top"></div>
+      <div class="bottom"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+
+      <!-- شبكة الخلايا -->
+      <div class="hex-grid" id="hexGrid">
+        {% for row in range(5) %}
+        <div class="hex-row{% if row % 2 != 0 %} offset{% endif %}">
+          {% for col in range(5) %}
+          {% set unique_index = (row * 5 + col) % letters|length %}
+          <button class="hex" data-cell="{{ row }}-{{ col }}" data-letter="{{ letters[unique_index] }}">
+            {{ letters[unique_index] }}
+          </button>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- المودال -->
+<div id="questionModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>الحرف المختار: <span id="modal-letter" style="color:#007bff; font-size: 48px;"></span></h2>
+    <img id="modal-image" src="" alt="صورة الحرف" style="width: 150px; height: 150px; object-fit: contain; margin: 10px 0;" />
+    <p id="modal-question">السؤال هنا...</p>
+
+    <div id="timer" style="display:none; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+      الوقت المتبقي: <span id="timer-value">30</span> ثانية
+    </div>
+
+    <button id="start-timer">ابدأ المؤقت</button>
+
+    <div style="margin-top: 20px;">
+      <button id="team1" class="team-btn" style="background-color: rgba(110, 0, 0, 0.648);">🟥 الفريق الأول</button>
+      <button id="team2" class="team-btn" style="background-color: rgba(0, 79, 128, 0.803); color: white;">🟦 الفريق الثاني</button>
+
+      <div style="margin-top: 15px;">
+        <button id="startQuestion" style="margin-left: 5px;">🟡 عرض السؤال</button>
+        <button id="resetBuzzer">🔄 إعادة البازر</button>
+      </div>
+      <div id="buzzerResult" style="margin-top: 10px; font-weight: bold; font-size: 18px;"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

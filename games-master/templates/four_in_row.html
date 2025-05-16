@@ -1,0 +1,22 @@
+<!-- templates/four_in_row.html -->
+{% extends "base.html" %}
+
+{% block title %}أربعة على التوالي{% endblock %}
+
+{% block content %}
+  <title>4 in a Row</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/four.css') }}">
+
+<body>
+  <h2>4 in a Row</h2>
+  <div class="board">
+    {% for col in range(7) %}
+      <div class="column">
+        <div class="column-title">عمود {{ col + 1 }}</div>
+        {% for row in range(6) %}
+          <div class="cell"></div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

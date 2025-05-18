@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}أدخل كود اللعبة{% endblock %}
+
+{% block content %}
+   
+    <style>
+        body { font-family: Arial, sans-serif; direction: rtl; text-align: center;  }
+        input[type="text"] { padding: 10px; width: 250px; font-size: 18px; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; font-size: 18px; background-color: #28a745; color: white; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        .flash { color: red; margin-bottom: 15px; }
+    </style>
+
+<body>
+    <h1>أدخل كود اللعبة</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('join_game') }}">
+        <input type="text" name="code" placeholder="أدخل الكود هنا" required />
+        <br />
+        <button type="submit">دخول اللعبة</button>
+    </form>
+    {% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+</body>
+{% endblock %}

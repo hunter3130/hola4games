@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}لوحة التحكم{% endblock %}
+{% block title %}Hex Game{% endblock %}
 
 {% block content %}
-<meta charset="UTF-8">
-<title>Hex Game</title>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/hex.css') }}">
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 <div id="winMessage" class="win-message"></div>
@@ -15,9 +14,11 @@
   <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 130px;">
     <div style="background-color: #ffdddd; border: 2px solid #ff4d4d; padding: 10px 20px; border-radius: 10px; font-weight: bold;">
       🟥 الفريق الأول
+      <p>كود الفريق الأحمر: <strong>{{ red_code }}</strong></p>
     </div>
     <div style="background-color: #ddeeff; border: 2px solid #3399ff; padding: 10px 20px; border-radius: 10px; font-weight: bold;">
       🟦 الفريق الثاني
+       <p>كود الفريق الأزرق: <strong>{{ blue_code }}</strong></p>
     </div>
   </div>
 
@@ -60,7 +61,9 @@
     <button id="start-timer">ابدأ المؤقت</button>
 
     <div style="margin-top: 20px;">
+        
       <button id="team1" class="team-btn" style="background-color: rgba(110, 0, 0, 0.648);">🟥 الفريق الأول</button>
+     
       <button id="team2" class="team-btn" style="background-color: rgba(0, 79, 128, 0.803); color: white;">🟦 الفريق الثاني</button>
 
       <div style="margin-top: 15px;">
@@ -71,5 +74,5 @@
     </div>
   </div>
 </div>
-
+      <script src="{{ url_for('static', filename='js/hex.js') }}" defer></script>
 {% endblock %}

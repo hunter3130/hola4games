@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}صفحة المتسابق {% endblock %}
+
+{% block content %}
+
+   
+<h1>مرحباً بك في اللعبة</h1>
+<p>أنت تنتمي إلى الفريق: {{ team }}</p>
+<p>الكود الذي دخلته هو:</p>
+<div class="code-box">{{ code }}</div>
+
+
+    <!-- هنا ممكن تضيف باقي محتوى صفحة المتسابقين -->
+
+{% endblock %}

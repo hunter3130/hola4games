@@ -9,28 +9,31 @@
 <div id="winMessage" class="win-message"></div>
 
 <div class="content">
-  <h1 style="font-size: 32px; margin-bottom: -160px; margin-top: -60px;">🎮 لعبة حروف ابو وســـام 🎮</h1>
+  <h1 style="font-size: 32px; margin-bottom: 20px; margin-top: 0;">🎮 لعبة حروف ابو وســـام 🎮</h1>
 
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 130px;">
-    <div style="background-color: #ffdddd; border: 2px solid #ff4d4d; padding: 10px 20px; border-radius: 10px; font-weight: bold;">
-      🟥 الفريق الأول
+  <div class="main-wrapper" style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 40px;">
+
+    <!-- بطاقة الفريق الأحمر على اليسار -->
+    <div style="background-color: #ffdddd; border: 2px solid #ff4d4d; padding: 20px; border-radius: 10px; font-weight: bold; width: 200px; display: flex; flex-direction: column; align-items: center;">
+      <h3 style="margin-bottom: 10px;">🔴 الفريق الأول</h3>
       <p>كود الفريق الأحمر: <strong>{{ red_code }}</strong></p>
-    </div>
-    <div style="background-color: #ddeeff; border: 2px solid #3399ff; padding: 10px 20px; border-radius: 10px; font-weight: bold;">
-      🟦 الفريق الثاني
-       <p>كود الفريق الأزرق: <strong>{{ blue_code }}</strong></p>
-    </div>
-  </div>
+      <div class="helps red-team" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+  <button class="help-card" data-help="pirate">🏴‍☠️ تحدي القرصان</button>
+  <button class="help-card" data-help="balloon">🎈 تحدي البالون</button>
+  <button class="help-card" data-help="change_question">🔄 تغيير السؤال</button>
+  <button class="help-card" data-help="hint">💡 تلميح</button>
+  <button class="help-card" data-help="red_card">🔴 كرت أحمر</button>
+</div>
 
-  <div class="main-wrapper">
+    </div>
+
+    <!-- الشبكة في الوسط -->
     <div class="container">
       <div class="top"></div>
       <div class="bottom"></div>
       <div class="left"></div>
       <div class="right"></div>
-
-      <!-- شبكة الخلايا -->
-      <div class="hex-grid" id="hexGrid">
+      <div class="hex-grid" id="hexGrid" style="margin: 0;">
         {% for row in range(5) %}
         <div class="hex-row{% if row % 2 != 0 %} offset{% endif %}">
           {% for col in range(5) %}
@@ -43,36 +46,73 @@
         {% endfor %}
       </div>
     </div>
+
+    <!-- بطاقة الفريق الأزرق على اليمين -->
+    <div style="background-color: #ddeeff; border: 2px solid #3399ff; padding: 20px; border-radius: 10px; font-weight: bold; width: 200px; display: flex; flex-direction: column; align-items: center;">
+      <h3 style="margin-bottom: 10px;">🔵 الفريق الثاني</h3>
+      <p>كود الفريق الأزرق: <strong>{{ blue_code }}</strong></p>
+     <div class="helps blue-team" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+  <button class="help-card" data-help="pirate">🏴‍☠️ تحدي القرصان</button>
+  <button class="help-card" data-help="balloon">🎈 تحدي البالون</button>
+  <button class="help-card" data-help="change_question">🔄 تغيير السؤال</button>
+  <button class="help-card" data-help="hint">💡 تلميح</button>
+  <button class="help-card" data-help="red_card">🔴 كرت أحمر</button>
+</div>
+
+    </div>
+
   </div>
 </div>
 
-<!-- المودال -->
 <div id="questionModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
     <h2>الحرف المختار: <span id="modal-letter" style="color:#007bff; font-size: 48px;"></span></h2>
     <img id="modal-image" src="" alt="صورة الحرف" style="width: 150px; height: 150px; object-fit: contain; margin: 10px 0;" />
     <p id="modal-question">السؤال هنا...</p>
-
     <div id="timer" style="display:none; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
       الوقت المتبقي: <span id="timer-value">30</span> ثانية
     </div>
-
     <button id="start-timer">ابدأ المؤقت</button>
-
     <div style="margin-top: 20px;">
-        
-      <button id="team1" class="team-btn" style="background-color: rgba(110, 0, 0, 0.648);">🟥 الفريق الأول</button>
-     
-      <button id="team2" class="team-btn" style="background-color: rgba(0, 79, 128, 0.803); color: white;">🟦 الفريق الثاني</button>
-
+      <button id="team1" class="team-btn" style="background-color: rgba(110, 0, 0, 0.648);">🔵 الفريق الأول</button>
+      <button id="team2" class="team-btn" style="background-color: rgba(0, 79, 128, 0.803); color: white;">🔶 الفريق الثاني</button>
       <div style="margin-top: 15px;">
-        <button id="startQuestion" style="margin-left: 5px;">🟡 عرض السؤال</button>
+        <button id="startQuestion" style="margin-left: 5px;">🔹 عرض السؤال</button>
         <button id="resetBuzzer">🔄 إعادة البازر</button>
       </div>
       <div id="buzzerResult" style="margin-top: 10px; font-weight: bold; font-size: 18px;"></div>
     </div>
   </div>
 </div>
-      <script src="{{ url_for('static', filename='js/hex.js') }}" defer></script>
+
+<style>
+.helps {
+  /* تنسيق البطاقات */
+}
+
+.help-card {
+  padding: 8px 12px;
+  background: white;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  width: 100%;
+  box-sizing: border-box;
+}
+.help-card:disabled {
+  background: #f8d7da;
+  border-color: #dc3545;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  color: #a94442;
+}
+.help-card:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+</style>
+
+<script src="{{ url_for('static', filename='js/hex.js') }}" defer></script>
 {% endblock %}

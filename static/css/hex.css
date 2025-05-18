@@ -299,3 +299,35 @@ button:hover {
   z-index: 9999;
   text-align: center;
 }
+/* كروت الفريق الأحمر */
+.red-team .help-card {
+  background: #fff0f0;
+  border: 2px solid #d63333;
+  color: #a60000;
+}
+.red-team .help-card:hover:not(:disabled) {
+  background-color: #f8d7da;
+  border-color: #b52b2b;
+  color: #800000;
+}
+
+/* كروت الفريق الأزرق */
+.blue-team .help-card {
+  background: #e6f0ff;
+  border: 2px solid #3366cc;
+  color: #003399;
+}
+.blue-team .help-card:hover:not(:disabled) {
+  background-color: #cce0ff;
+  border-color: #274b8f;
+  color: #002366;
+}
+
+/* حالات معطلة مشتركة */
+.help-card:disabled {
+  background: #f8d7da;
+  border-color: #dc3545;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  color: #a94442;
+}

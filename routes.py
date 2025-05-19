@@ -107,7 +107,7 @@ def four_in_row():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 @app.route('/participant/<code>')
 def participant(code):
@@ -147,11 +147,16 @@ def join_game():
 
         if code == red_code:
             session['team'] = 'red'
+            session['is_participant'] = True
             return redirect(url_for('participant', code=code))
-        elif code == blue_code:
+
+        elif code == game_data.get('blue_code'):
             session['team'] = 'blue'
+            session['is_participant'] = True
             return redirect(url_for('participant', code=code))
+
         else:
             error = '❌ كود غير صحيح'
 
     return render_template('index.html', error=error)
+

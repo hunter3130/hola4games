@@ -1,19 +1,30 @@
 {% extends 'base.html' %}
-
 {% block title %}صفحة المتسابق{% endblock %}
+{% block body_class %}participant-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/participant.css') }}">
+{% endblock %}
 
 {% block content %}
-<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/participant.css') }}">
-
 <div class="container text-center">
-
   <h1 class="welcome-text">مرحباً بك في اللعبة</h1>
 
-  <!-- مكان عرض بطاقة الفريق -->
-  <div class="team-cards" id="team-cards-container"></div>
+  <div class="team-cards">
+    {% if team == 'red' %}
+      <div class="team-card" style="border-top: 5px solid #e74c3c;">
+        <div class="team-name">الفريق الأحمر</div>
+        <div class="team-code">{{ code }}</div>
+      </div>
+    {% elif team == 'blue' %}
+      <div class="team-card" style="border-top: 5px solid #3498db;">
+        <div class="team-name">الفريق الأزرق</div>
+        <div class="team-code">{{ code }}</div>
+      </div>
+    {% else %}
+      <div>أنت لم تنضم لأي فريق</div>
+    {% endif %}
+  </div>
 
-  <!-- بطاقات وسائل المساعدة -->
   <div class="helpers-container">
     {% set helpers = ['تحدي القرصان', 'تحدي البالون', 'تغيير السؤال', 'طلب خيارات', 'تلميح على الإجابة', 'كرت أحمر'] %}
     {% for helper in helpers %}
@@ -84,7 +95,7 @@
     card.disabled = true;
 
     socket.emit("helper_used", {
-      team: team,
+      team: "{{ team }}",
       helper: helperName
     });
   }
@@ -125,6 +136,4 @@
     }
   });
 </script>
-
-<script src="{{ url_for('static', filename='js/hex.js') }}" defer></script>
 {% endblock %}

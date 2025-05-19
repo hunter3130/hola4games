@@ -6,24 +6,28 @@
     <title>{% block title %}لوحة التحكم{% endblock %}</title>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    
+    {% block extra_css %}{% endblock %}
 </head>
-<body>
-    <nav class="navbar">
-    <div class="welcome-msg">
-        {% if 'username' in session %}
-            مرحباً {{ session['username'] }}
-        {% else %}
-            مرحباً زائر
-        {% endif %}
-    </div>
-    
-    {% if 'username' in session %}
-        <a href="{{ url_for('logout') }}" class="logout-link">تسجيل الخروج</a>
-    {% else %}
-        <a href="{{ url_for('login') }}" class="logout-link">تسجيل الدخول</a>
-    {% endif %}
+<body class="{% block body_class %}{% endblock %}">
+
+<nav class="navbar">
+  <div class="welcome-msg">
+      {% if session.get('username') %}
+          مرحباً {{ session['username'] }}
+      {% elif session.get('is_participant') %}
+          مرحباً متسابق
+      {% else %}
+          مرحباً زائر
+      {% endif %}
+  </div>
+
+  {% if session.get('username') %}
+      <a href="{{ url_for('logout') }}" class="logout-link">تسجيل الخروج</a>
+  {% elif not session.get('is_participant') %}
+      <a href="{{ url_for('login') }}" class="logout-link">تسجيل الدخول</a>
+  {% endif %}
 </nav>
+
 
     <div class="content">
         {% block content %}{% endblock %}

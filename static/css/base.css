@@ -1,47 +1,51 @@
- body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-        }
+/* ✅ تنسيقات عامة */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+}
 
-        .navbar {
-            background-color: #2c3e50;
-            color: white;
-            padding: 12px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+.navbar {
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-        .navbar .left,
-        .navbar .right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+.navbar .left,
+.navbar .right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            background-color: #34495e;
-            padding: 6px 14px;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
+.navbar a {
+    color: white;
+    text-decoration: none;
+    background-color: #34495e;
+    padding: 6px 14px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
 
-        .navbar a:hover {
-            background-color: #1abc9c;
-        }
+.navbar a:hover {
+    background-color: #1abc9c;
+}
 
-        .welcome-msg {
-            font-size: 16px;
-        }
+.welcome-msg {
+    font-size: 16px;
+}
 
-        .content {
-            padding: 10px;
-        }
-        .login-container {
+.content {
+    padding: 10px;
+}
+
+
+/* ✅ تسجيل الدخول */
+body.login-page .login-container {
     max-width: 400px;
     margin: 50px auto;
     background-color: #ffffff;
@@ -50,19 +54,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.login-form h2 {
+body.login-page .login-form h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #2c3e50;
 }
 
-.login-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.login-form input {
+body.login-page .login-form input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -72,7 +70,7 @@
     font-size: 16px;
 }
 
-.login-form button {
+body.login-page .login-form button {
     width: 100%;
     padding: 10px;
     background-color: #2c3e50;
@@ -84,7 +82,97 @@
     transition: background-color 0.3s ease;
 }
 
-.login-form button:hover {
+body.login-page .login-form button:hover {
     background-color: #34495e;
 }
-  
+
+
+/* ✅ إدخال كود اللعبة */
+body.join-game-page form {
+    max-width: 400px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+body.join-game-page form input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    direction: ltr;
+    text-align: left;
+}
+
+body.join-game-page form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+body.join-game-page form button:hover {
+    background-color: #218838;
+}
+
+body.join-game-page .flash p {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+}
+body.participant-page .container {
+  max-width: 700px;
+  margin: 30px auto;
+  text-align: center;
+}
+
+body.participant-page .team-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+body.participant-page .team-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+body.participant-page .team-code {
+  font-size: 18px;
+  color: #555;
+}
+
+body.participant-page .helper-card {
+  display: inline-block;
+  margin: 10px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #34495e;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+body.participant-page .helper-card:hover {
+  background-color: #2c3e50;
+}
+
+body.participant-page .disabled-card {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

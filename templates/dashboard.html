@@ -4,13 +4,13 @@
     <div class="container">
         <h1 class="page-title">اختر اللعبة</h1>
         <div class="card-container">
-            <div class="card" onclick="window.location='{{ url_for('start_new_game') }}'">
-                <img src="{{ url_for('static', filename='imgs/hex-logo.png') }}" alt="Hex Game">
+            <div class="card" onclick="window.location='{{ url_for('hex_game') }}'">
+                <img src="{{ url_for('static', filename='imgs/hex-logo.PNG') }}" alt="Hex Game">
                 <h2>Hex Game</h2>
                 <p>اللعبة الاستراتيجية المشوقة.</p>
             </div>
             <div class="card" onclick="window.location='{{ url_for('four_in_row') }}'">
-                <img src="{{ url_for('static', filename='imgs/four-in-row-logo.png') }}" alt="Four in Row">
+                <img src="{{ url_for('static', filename='imgs/four-in-row-logo.PNG') }}" alt="Four in Row">
 
                 <h2>Four in Row</h2>
                 <p>اللعبة التي تعتمد على التفكير السريع.</p>

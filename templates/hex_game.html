@@ -9,12 +9,15 @@
 <div id="winMessage" class="win-message"></div>
 
 <div class="content">
-  <h1 style="font-size: 32px; margin-bottom: 20px; margin-top: 0;">🎮 لعبة حروف ابو وســـام 🎮</h1>
-
-  <div class="main-wrapper" style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 40px;">
+  <h1 >🎮 لعبة حروف ابو وســـام 🎮</h1>
+<!-- زر اعادة اللعبة من جديد -->
+    <form action="{{ url_for('start_new_game') }}" method="get">
+    <button type="submit" class="btn btn-warning">🔄 لعبة جديدة</button>
+</form>
+  <div class="main-wrapper" >
 
     <!-- بطاقة الفريق الأحمر على اليسار -->
-    <div style="background-color: #ffdddd; border: 2px solid #ff4d4d; padding: 20px; border-radius: 10px; font-weight: bold; width: 200px; display: flex; flex-direction: column; align-items: center;">
+    <div class="team-card" style="border-top: 5px solid #e74c3c;">
       <h3 style="margin-bottom: 10px;">🔴 الفريق الأول</h3>
       <p>كود الفريق الأحمر: <strong>{{ red_code }}</strong></p>
       <div class="helps red-team" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
@@ -33,7 +36,7 @@
       <div class="bottom"></div>
       <div class="left"></div>
       <div class="right"></div>
-      <div class="hex-grid" id="hexGrid" style="margin: 0;">
+      <div class="hex-grid" id="hexGrid">
         {% for row in range(5) %}
         <div class="hex-row{% if row % 2 != 0 %} offset{% endif %}">
           {% for col in range(5) %}
@@ -48,7 +51,7 @@
     </div>
 
     <!-- بطاقة الفريق الأزرق على اليمين -->
-    <div style="background-color: #ddeeff; border: 2px solid #3399ff; padding: 20px; border-radius: 10px; font-weight: bold; width: 200px; display: flex; flex-direction: column; align-items: center;">
+    <div class="team-card" style="border-top: 5px solid #3498db;">
       <h3 style="margin-bottom: 10px;">🔵 الفريق الثاني</h3>
       <p>كود الفريق الأزرق: <strong>{{ blue_code }}</strong></p>
      <div class="helps blue-team" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">

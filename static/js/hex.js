@@ -45,6 +45,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
         timeoutSound.play();
+
+        // إظهار رسالة انتهاء الوقت
+        buzzerResult.textContent = "انتهى الوقت، لا يمكن اختيار الفريق الآن.";
+
+        // قفل أزرار الفريق مؤقتًا لمنع الاختيار بعد انتهاء الوقت
+        document.getElementById("team1").disabled = true;
+        document.getElementById("team2").disabled = true;
       }
     }, 1000);
   }
@@ -67,27 +74,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("winnerMessage")) return; // تمنع الرسالة من الظهور أكثر من مرة
     const winnerDiv = document.createElement("div");
     winnerDiv.id = "winnerMessage";
-    winnerDiv.style.position = "fixed";
-    winnerDiv.style.top = "50%";
-    winnerDiv.style.left = "50%";
-    winnerDiv.style.transform = "translate(-50%, -50%)";
-    winnerDiv.style.backgroundColor = "rgba(0,0,0,0.8)";
-    winnerDiv.style.color = teamName === "الأحمر" ? "#ff4d4d" : "#3399ff";
-    winnerDiv.style.fontSize = "3rem";
-    winnerDiv.style.padding = "20px 40px";
-    winnerDiv.style.borderRadius = "15px";
-    winnerDiv.style.zIndex = "1000";
-    winnerDiv.style.textAlign = "center";
-    winnerDiv.style.boxShadow = "0 0 15px rgba(0,0,0,0.5)";
-    winnerDiv.textContent = `🎉 الفريق ${teamName} فاز! 🎉`;
+    winnerDiv.classList.add("winner-message");
+    winnerDiv.textContent = `الفريق ${teamName} فاز! 🎉`;
 
     document.body.appendChild(winnerDiv);
+
+    // تختفي بعد 5 ثواني
+    setTimeout(() => {
+      if (winnerDiv.parentNode) {
+        winnerDiv.parentNode.removeChild(winnerDiv);
+      }
+    }, 5000);
 
     // قفل الخلايا ومنع التفاعل
     lockAllCells();
   }
 
   // ========== دالة الفوز المحسنة مع أخذ إزاحة الصف في الحسبان ==========
+
   function checkWin(teamColor) {
     const visited = Array.from({ length: boardSize }, () =>
       Array(boardSize).fill(false)
@@ -175,6 +179,21 @@ document.addEventListener("DOMContentLoaded", () => {
     "ي": { image: "notAv.png", question: "لا يوجد سؤال لهذا الحرف" },
   };
 
+  // ========== دوال المساعدة لتفعيل وتعطيل أزرار الفريق ==========
+
+  function enableTeamButtons() {
+    document.getElementById("team1").disabled = false;
+    document.getElementById("team2").disabled = false;
+  }
+
+  // إعادة ضبط المودال (عند فتح السؤال الجديد)
+  function resetModal() {
+    buzzerResult.textContent = "";
+    enableTeamButtons();
+    startTimerBtn.style.display = "block";
+    timerContainer.style.display = "none";
+  }
+
   // ========== معالجة النقر على الخلايا ==========
 
   document.querySelectorAll(".hex").forEach(cell => {
@@ -193,22 +212,15 @@ document.addEventListener("DOMContentLoaded", () => {
         modalQuestion.textContent = "سؤال غير متاح لهذا الحرف.";
       }
 
-      // إعداد المؤقت
-      timerDisplay.textContent = "5";
-      timerContainer.style.display = "none";
-      startTimerBtn.style.display = "block";
-      buzzerResult.textContent = "";
-
-      // عرض المودال
+      resetModal();
       modal.style.display = "flex";
       stopTimer();
 
-      // إرسال إشارة البازر
-      socket.emit('buzz', { team: 'المتسابق' });
+      socket.emit("buzz", { team: "المتسابق" });
     });
   });
 
-  // ========== معالجة أحداث الفرق ==========
+  // ========== معالجة أحداث اختيار الفرق ==========
 
   document.getElementById("team1").addEventListener("click", () => {
     if (currentCell && !currentCell.classList.contains("locked")) {
@@ -233,6 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     stopTimer();
     modal.style.display = "none";
+    enableTeamButtons();
   });
 
   document.getElementById("team2").addEventListener("click", () => {
@@ -258,45 +271,82 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     stopTimer();
     modal.style.display = "none";
+    enableTeamButtons();
   });
 
-  // إغلاق المودال
+  // ========== إغلاق المودال ==========
+
   closeBtn.onclick = () => {
     modal.style.display = "none";
     stopTimer();
+    enableTeamButtons();
   };
 
   window.onclick = (event) => {
     if (event.target === modal) {
       modal.style.display = "none";
       stopTimer();
+      enableTeamButtons();
     }
   };
 
-  // زر بدء المؤقت
+  // ========== زر بدء المؤقت ==========
+
   startTimerBtn.addEventListener("click", startTimer);
 
-  // إعادة ضبط البازر
+  // ========== إعادة ضبط البازر ==========
+
   resetBuzzerBtn.addEventListener("click", () => {
     buzzerResult.textContent = "";
-    socket.emit('resetBuzzer');
+    socket.emit("resetBuzzer");
   });
 
-  // بدء السؤال من السيرفر
+  // ========== بدء السؤال من السيرفر ==========
+
   startQuestionBtn.addEventListener("click", () => {
-    socket.emit('startQuestion');
+    socket.emit("startQuestion");
   });
 
-  // استقبال إشعارات البازر من السيرفر
-  socket.on('buzz', (data) => {
+  // ========== استقبال إشعارات البازر من السيرفر ==========
+
+  socket.on("buzz", (data) => {
     buzzerResult.textContent = `${data.team} ضغط البازر أولًا!`;
   });
 
-  socket.on('resetBuzzer', () => {
+  socket.on("resetBuzzer", () => {
     buzzerResult.textContent = "";
   });
 
-  socket.on('startQuestion', () => {
+  socket.on("startQuestion", () => {
     buzzerResult.textContent = "السؤال بدأ!";
+  });
+
+  // ========== التعامل مع أزرار المساعدة ==========
+
+  // لما يضغط المستخدم زر مساعدة
+  document.querySelectorAll(".help-card").forEach(button => {
+    button.addEventListener("click", () => {
+      if (!button.disabled) {
+        const helpType = button.getAttribute("data-help");
+        console.log("Sending help_used event:", helpType);
+        socket.emit("help_used", helpType);
+      }
+    });
+  });
+
+  // استقبال حدث تعطيل زر المساعدة من السيرفر
+  socket.on("disable_helper", function(data) {
+    const team = data.team; // "red" أو "blue"
+    const helper = data.helper;
+
+    // اختار العنصر حسب الفريق والنص
+    const selector = team === "red" ? ".red-team .help-card" : ".blue-team .help-card";
+    const buttons = document.querySelectorAll(selector);
+    buttons.forEach((btn) => {
+      if (btn.innerText.includes(helper)) {
+        btn.disabled = true;
+        btn.innerText += " ❌";
+      }
+    });
   });
 });

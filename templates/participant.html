@@ -10,38 +10,71 @@
 
   <h1 class="welcome-text">مرحباً بك في اللعبة</h1>
 
-  <!-- بطاقات الفريقين -->
-  <div class="team-cards">
-   {% if team == 'red' %}
-    <div class="team-card" style="border-top: 5px solid #e74c3c;">
-      <div class="team-name">الفريق الأحمر</div>
-      <div class="team-code">{{ code }}</div>
-    </div>
-   
-    {% elif team == 'blue' %}
-    <div class="team-card" style="border-top: 5px solid #3498db;">
-      <div class="team-name">الفريق الأزرق</div>
-      <div class="team-code">{{ code }}</div>
-    </div>
-  {% else %}
-  <div>أنت لم تنضم لأي فريق</div>
-{% endif %}
-  </div>
+  <!-- مكان عرض بطاقة الفريق -->
+  <div class="team-cards" id="team-cards-container"></div>
 
   <!-- بطاقات وسائل المساعدة -->
   <div class="helpers-container">
-  {% set helpers = ['تحدي القرصان', 'تحدي البالون', 'تغيير السؤال', 'طلب خيارات', 'تلميح على الإجابة', 'كرت أحمر'] %}
-  {% for helper in helpers %}
-     <button class="helper-card" id="helper-{{ loop.index }}" onclick="useHelper({{ loop.index }}, '{{ helper }}')">
-      {{ helper }}
-    </button>
-  {% endfor %}
-   </div>
+    {% set helpers = ['تحدي القرصان', 'تحدي البالون', 'تغيير السؤال', 'طلب خيارات', 'تلميح على الإجابة', 'كرت أحمر'] %}
+    {% for helper in helpers %}
+      <button class="helper-card" id="helper-{{ loop.index }}" onclick="useHelper({{ loop.index }}, '{{ helper }}')">
+        {{ helper }}
+      </button>
+    {% endfor %}
+  </div>
 </div>
 
 <script>
   const socket = io();
 
+  // بيانات السيرفر أول مرة
+  const serverTeam = "{{ team }}";
+  const serverCode = "{{ code }}";
+
+  // حفظ البيانات في localStorage لو مش موجودة أصلاً
+  if (!localStorage.getItem("team")) {
+    localStorage.setItem("team", serverTeam);
+    localStorage.setItem("code", serverCode);
+  }
+
+  // قراءة البيانات من localStorage أو من السيرفر كبديل
+  const team = localStorage.getItem("team") || serverTeam;
+  const code = localStorage.getItem("code") || serverCode;
+
+  // دالة لعرض بطاقة الفريق حسب الفريق الحالي
+  function renderTeamCard() {
+    const container = document.getElementById("team-cards-container");
+    let cardHTML = "";
+
+    if (team === "red") {
+      cardHTML = `
+        <div class="team-card" style="border-top: 5px solid #e74c3c;">
+          <div class="team-name">الفريق الأحمر</div>
+          <div class="team-code">${code}</div>
+          <div class="buzzer-container">
+            <button id="buzzer-button" onclick="buzz()">🔔 اضغط البازر</button>
+          </div>
+        </div>`;
+    } else if (team === "blue") {
+      cardHTML = `
+        <div class="team-card" style="border-top: 5px solid #3498db;">
+          <div class="team-name">الفريق الأزرق</div>
+          <div class="team-code">${code}</div>
+          <div class="buzzer-container">
+            <button id="buzzer-button" style="background-color: royalblue;" onclick="buzz()">🔔 اضغط البازر</button>
+          </div>
+        </div>`;
+    } else {
+      cardHTML = `<div>أنت لم تنضم لأي فريق</div>`;
+    }
+
+    container.innerHTML = cardHTML;
+  }
+
+  // ننفذ العرض عند تحميل الصفحة
+  renderTeamCard();
+
+  // دالة استخدام وسائل المساعدة
   function useHelper(index, helperName) {
     const card = document.getElementById(`helper-${index}`);
     if (card.classList.contains("disabled-card")) return;
@@ -51,12 +84,47 @@
     card.disabled = true;
 
     socket.emit("helper_used", {
-      team: "{{ team }}",  // red أو blue
+      team: team,
       helper: helperName
     });
   }
-</script>
 
+  // دالة الضغط على البازر
+  function buzz() {
+    if (!team) {
+      alert("⚠️ أنت لم تنضم لأي فريق");
+      return;
+    }
+    socket.emit("buzz", { team: team });
+
+    const btn = document.getElementById("buzzer-button");
+    btn.disabled = true;
+    btn.innerText = "✅ تم الضغط!";
+    btn.classList.add("buzzer-pressed");
+  }
+
+  // استقبال حدث الضغط من السيرفر
+  socket.on("buzz", (data) => {
+    const winner = data.team;
+    const myTeam = team;
+
+    const buzzerBtn = document.getElementById("buzzer-button");
+    if (myTeam !== winner) {
+      buzzerBtn.disabled = true;
+      buzzerBtn.innerText = "⛔ انتهى الوقت";
+    }
+  });
+
+  // إعادة تهيئة زر البازر عند الإشارة من السيرفر
+  socket.on("buzzer_reset", () => {
+    const buzzerBtn = document.getElementById("buzzer-button");
+    if (buzzerBtn) {
+      buzzerBtn.disabled = false;
+      buzzerBtn.innerText = "🔔 اضغط البازر";
+      buzzerBtn.classList.remove("buzzer-pressed");
+    }
+  });
+</script>
 
 <script src="{{ url_for('static', filename='js/hex.js') }}" defer></script>
 {% endblock %}

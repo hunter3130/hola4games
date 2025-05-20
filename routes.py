@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, flash, request, session
 import random
 import string
 import json
+import os
 from app import app, socketio
 from utils import generate_team_code, initialize_hex_game, reset_full_game
 
@@ -12,8 +13,7 @@ def index():
 # ----------توليد لعبة جديدة---------------
 @app.route('/start_new_game')
 def start_new_game():
-    red_code, blue_code, letters = reset_full_game()
-    print("تم توليد لعبة جديدة:", red_code, blue_code)
+    red_code, blue_code, letters, buzzer_pressed, helpers = initialize_hex_game()
     flash("✅ تم إنشاء لعبة جديدة بنجاح")
     return redirect(url_for('hex_game'))
 
@@ -30,8 +30,8 @@ def login():
             session['username'] = username
             return redirect(url_for('contestant'))
         else:
-           flash("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
-           return render_template('login.html')
+            flash("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
+            return render_template('login.html')
     return render_template('login.html')
 
 @app.route('/admin', endpoint='admin_page')
@@ -67,14 +67,23 @@ def dashboard():
 @app.route('/hex-game')
 def hex_game():
     try:
+        if not os.path.exists("teams_data.json"):
+            initialize_hex_game()
+        
         with open('teams_data.json', 'r', encoding='utf-8') as f:
             game_data = json.load(f)
-            red_code = game_data.get('red_code', '')
-            blue_code = game_data.get('blue_code', '')
-            helpers = game_data.get('helpers', {})
+            red_code = game_data.get('red', {}).get('code', '')
+            blue_code = game_data.get('blue', {}).get('code', '')
+            buzzer_pressed = {
+                "red": game_data.get('red', {}).get('buzzer_pressed', False),
+                "blue": game_data.get('blue', {}).get('buzzer_pressed', False)
+            }
+            helpers = {
+                "red": game_data.get('red', {}).get('helpers', {}),
+                "blue": game_data.get('blue', {}).get('helpers', {})
+            }
             selected_letters = game_data.get('letters', [])
 
-            # إذا الأحرف غير موجودة أو فاضية، نولّدها ونحدّث الملف
             if not selected_letters:
                 selected_letters = random.sample(list("أبجدھوزحطيكلمنسعفصقرشتثخذضظغ"), 25)
                 game_data["letters"] = selected_letters
@@ -82,16 +91,13 @@ def hex_game():
                     json.dump(game_data, f2, ensure_ascii=False, indent=4)
 
     except FileNotFoundError:
-        red_code, blue_code, selected_letters = initialize_hex_game()
-        helpers = {
-            "red": {"skip": False, "hint": False, "fifty": False},
-            "blue": {"skip": False, "hint": False, "fifty": False}
-        }
+        red_code, blue_code, selected_letters, buzzer_pressed, helpers = initialize_hex_game()
 
     return render_template('hex_game.html',
                            letters=selected_letters,
                            red_code=red_code,
                            blue_code=blue_code,
+                           buzzer_pressed=buzzer_pressed,
                            helpers=helpers)
 
 @app.route('/four-in-row')
@@ -106,17 +112,20 @@ def logout():
 @app.route('/participant/<code>')
 def participant(code):
     try:
-        with open('teams_data.json', encoding='utf-8') as f:  # ✅
+        with open('teams_data.json', encoding='utf-8') as f:
             game_data = json.load(f)
     except FileNotFoundError:
         flash('لا توجد لعبة حالياً.')
         return redirect(url_for('index'))
 
-    if code not in [game_data['red_code'], game_data['blue_code']]:
+    red_code = game_data.get('red', {}).get('code')
+    blue_code = game_data.get('blue', {}).get('code')
+
+    if code not in [red_code, blue_code]:
         flash('الكود غير صحيح أو اللعبة غير شغالة.')
         return redirect(url_for('index'))
 
-    team = 'red' if code == game_data['red_code'] else 'blue'
+    team = 'red' if code == red_code else 'blue'
     session['team'] = team
 
     return render_template('participant.html', code=code, team=team)
@@ -133,10 +142,13 @@ def join_game():
             error = 'لا توجد لعبة حالياً.'
             return render_template('index.html', error=error)
 
-        if code == game_data.get('red_code'):
+        red_code = game_data.get('red', {}).get('code')
+        blue_code = game_data.get('blue', {}).get('code')
+
+        if code == red_code:
             session['team'] = 'red'
             return redirect(url_for('participant', code=code))
-        elif code == game_data.get('blue_code'):
+        elif code == blue_code:
             session['team'] = 'blue'
             return redirect(url_for('participant', code=code))
         else:

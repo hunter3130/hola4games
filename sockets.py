@@ -1,38 +1,55 @@
 from flask_socketio import emit
 from app import socketio
 import json
-from utils import use_helper  # لازم تتأكد تستوردها من ملفك اللي فيه المساعدات
+from utils import use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_buzzer_pressed
 
-first_buzzer = None
+TEAM_DATA_FILE = 'teams_data.json'  # <-- تم التعديل هنا
+
+def read_team_data():
+    with open(TEAM_DATA_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def write_team_data(data):
+    with open(TEAM_DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 @socketio.on("helper_used")
 def handle_helper_used(data):
-    team = data.get("team")
+    team = data.get("team")  # 'red' أو 'blue'
     helper = data.get("helper")
 
     if not team or not helper:
-        return  # تحقق أساسي
+        return
 
-    use_helper(team, helper)  # تحدث teams_data.json
+    team_data = read_team_data()
 
-    # نرسل إشعار للمستخدمين أن المساعدة تم استخدامها
+    # تحقق من أن المساعدة لم تُستخدم من قبل
+    if team_data[team]["helpers"].get(helper, False):
+        return
+
+    # تحديث حالة المساعدة
+    team_data[team]["helpers"][helper] = True
+    write_team_data(team_data)
+
     emit("helper_update", {"team": team, "helper": helper}, broadcast=True)
-
-    # نرسل للمستخدمين لتعطيل الزر (على حسب المنطق في JS)
     emit("disable_helper", {"team": team, "helper": helper}, broadcast=True)
-
 
 @socketio.on('start_question')
 def handle_start_question(data):
-    global first_buzzer
-    first_buzzer = None
-    question = "ما هو لون السماء؟"
+    question = data.get("question", "ما هو لون السماء؟")
     emit('show_question', {'question': question, 'team': 'لا أحد'}, broadcast=True)
 
-
-@socketio.on('buzz')
+@socketio.on("buzz")
 def handle_buzz(data):
-    global first_buzzer
-    if not first_buzzer:
-        first_buzzer = data['team']
-        emit('buzzer_result', {'team': first_buzzer}, broadcast=True)
+    team = data.get("team")
+    if not team:
+        return
+
+    if not any_buzzer_pressed():
+        set_buzzer(team, True)
+        emit("buzz", {"team": team}, broadcast=True)
+
+@socketio.on("reset_buzzer")
+def handle_reset_buzzer():
+    reset_buzzer()
+    emit("buzzer_reset", broadcast=True)

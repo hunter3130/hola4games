@@ -29,6 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const timeoutSound = new Audio("/static/sounds/timeout.mp3");
 
+  const buzzerButton = document.getElementById("buzzer-button");
+
+
+
   // ========== دوال التحكم الأساسية ==========
 
   function startTimer() {
@@ -216,7 +220,8 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.style.display = "flex";
       stopTimer();
 
-      socket.emit("buzz", { team: "المتسابق" });
+      // ======= تم تعطيل إرسال حدث buzz عند فتح الخلية =======
+      // socket.emit("buzz", { team: "المتسابق" });
     });
   });
 
@@ -298,55 +303,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   resetBuzzerBtn.addEventListener("click", () => {
     buzzerResult.textContent = "";
-    socket.emit("resetBuzzer");
+    enableTeamButtons();
+    stopTimer();
+    startTimerBtn.style.display = "block";
+    timerContainer.style.display = "none";
   });
 
-  // ========== بدء السؤال من السيرفر ==========
+  // ========== زر بدء السؤال ==========
 
   startQuestionBtn.addEventListener("click", () => {
-    socket.emit("startQuestion");
+    // أعد ضبط المودال والمؤقت والبازر للبدء بسؤال جديد
+    resetModal();
   });
 
-  // ========== استقبال إشعارات البازر من السيرفر ==========
+  // ========== استقبال حدث البازر من السيرفر ==========
 
-  socket.on("buzz", (data) => {
-    buzzerResult.textContent = `${data.team} ضغط البازر أولًا!`;
+  socket.on("buzz", data => {
+    buzzerResult.textContent = `الفريق ${data.team} ضغط البازر!`;
+    stopTimer();
+    disableTeamButtons();
   });
 
-  socket.on("resetBuzzer", () => {
-    buzzerResult.textContent = "";
-  });
-
-  socket.on("startQuestion", () => {
-    buzzerResult.textContent = "السؤال بدأ!";
-  });
-
-  // ========== التعامل مع أزرار المساعدة ==========
-
-  // لما يضغط المستخدم زر مساعدة
-  document.querySelectorAll(".help-card").forEach(button => {
-    button.addEventListener("click", () => {
-      if (!button.disabled) {
-        const helpType = button.getAttribute("data-help");
-        console.log("Sending help_used event:", helpType);
-        socket.emit("help_used", helpType);
-      }
-    });
-  });
-
-  // استقبال حدث تعطيل زر المساعدة من السيرفر
-  socket.on("disable_helper", function(data) {
-    const team = data.team; // "red" أو "blue"
-    const helper = data.helper;
-
-    // اختار العنصر حسب الفريق والنص
-    const selector = team === "red" ? ".red-team .help-card" : ".blue-team .help-card";
-    const buttons = document.querySelectorAll(selector);
-    buttons.forEach((btn) => {
-      if (btn.innerText.includes(helper)) {
-        btn.disabled = true;
-        btn.innerText += " ❌";
-      }
-    });
-  });
+  // دالة تعطيل أزرار الفريق بعد البازر
+  function disableTeamButtons() {
+    document.getElementById("team1").disabled = true;
+    document.getElementById("team2").disabled = true;
+  }
 });

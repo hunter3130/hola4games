@@ -117,5 +117,71 @@
 }
 </style>
 
+<script>
+const socket = io();
+const teamName = localStorage.getItem("team_name");  // يأخذ اسم الفريق من التخزين المحلي
+
+
+// عرض نتيجة البازر
+socket.on("buzz", (data) => {
+  const team = data.team;
+  const winnerMsg = `🚨 الفريق ${team === 'red' ? 'الأحمر' : 'الأزرق'} ضغط أولاً!`;
+  const buzzerResult = document.getElementById("buzzerResult");
+  if (buzzerResult) buzzerResult.innerText = winnerMsg;
+
+  // إظهار في منتصف الشاشة
+  const winnerMessage = document.createElement("div");
+  winnerMessage.id = "buzzer-winner";
+  winnerMessage.innerText = winnerMsg;
+  winnerMessage.style.position = 'fixed';
+  winnerMessage.style.top = '40%';
+  winnerMessage.style.left = '50%';
+  winnerMessage.style.transform = 'translate(-50%, -50%)';
+  winnerMessage.style.fontSize = '2.5rem';
+  winnerMessage.style.background = '#fff';
+  winnerMessage.style.padding = '20px 40px';
+  winnerMessage.style.borderRadius = '15px';
+  winnerMessage.style.boxShadow = '0 0 20px rgba(0,0,0,0.2)';
+  winnerMessage.style.zIndex = 9999;
+  document.body.appendChild(winnerMessage);
+});
+
+// إعادة تعيين البازر
+document.getElementById("resetBuzzer").addEventListener("click", () => {
+  socket.emit("reset_buzzer");
+});
+
+socket.on("buzzer_reset", () => {
+  const msg = document.getElementById("buzzer-winner");
+  if (msg) msg.remove();
+
+  const buzzerResult = document.getElementById("buzzerResult");
+  if (buzzerResult) buzzerResult.innerText = "";
+});
+
+// إرسال البازر من المتسابق
+document.getElementById("buzzer-button").addEventListener("click", () => {
+  if (teamName) {
+    socket.emit("buzz", { team: teamName });
+    document.getElementById("buzzer-button").disabled = true;
+  }
+});
+
+// إظهار العناصر حسب الدور (أدمن/متسابق)
+window.addEventListener("DOMContentLoaded", () => {
+  const isAdmin = localStorage.getItem("is_admin") === "true";
+
+  if (isAdmin) {
+    document.getElementById("startQuestion").style.display = "inline-block";
+    document.getElementById("resetBuzzer").style.display = "inline-block";
+    document.getElementById("buzzer-section").style.display = "none";
+  } else {
+    document.getElementById("startQuestion").style.display = "none";
+    document.getElementById("resetBuzzer").style.display = "none";
+    document.getElementById("buzzer-section").style.display = "block";
+  }
+});
+</script>
+
 <script src="{{ url_for('static', filename='js/hex.js') }}" defer></script>
 {% endblock %}

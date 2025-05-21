@@ -5,7 +5,7 @@ import os
 
 
 # ---------- مسارات الملفات ----------
-TEAMS_FILE = "teams_data.json"
+TEAMS_FILE = "data/teams_data.json"
 
 # ---------- توليد كود عشوائي للفريق ----------
 def generate_team_code():
@@ -101,7 +101,7 @@ def load_teams_data():
             if isinstance(data, dict):
                 return data
             else:
-                print("❌ تحذير: ملف teams_data.json لا يحتوي على قاموس!")
+                print("❌ تحذير: ملف data/teams_data.json لا يحتوي على قاموس!")
                 return {}
         except json.JSONDecodeError:
             print("❌ تحذير: فشل قراءة ملف JSON!")

@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
+
 {% block title %}صفحة المتسابق{% endblock %}
-{% block body_class %}participant-page{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/participant.css') }}">
-{% endblock %}
 
 {% block content %}
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/participant.css') }}">
+
 <div class="container text-center">
+
   <h1 class="welcome-text">مرحباً بك في اللعبة</h1>
 
+<<<<<<< HEAD
   <div class="team-cards">
     {% if team == 'red' %}
       <div class="team-card" style="border-top: 5px solid #e74c3c;">
@@ -24,7 +26,12 @@
       <div>أنت لم تنضم لأي فريق</div>
     {% endif %}
   </div>
+=======
+  <!-- مكان عرض بطاقة الفريق -->
+  <div class="team-cards" id="team-cards-container"></div>
+>>>>>>> 4783836 (fixing navbar)
 
+  <!-- بطاقات وسائل المساعدة -->
   <div class="helpers-container">
     {% set helpers = ['تحدي القرصان', 'تحدي البالون', 'تغيير السؤال', 'طلب خيارات', 'تلميح على الإجابة', 'كرت أحمر'] %}
     {% for helper in helpers %}
@@ -95,7 +102,11 @@
     card.disabled = true;
 
     socket.emit("helper_used", {
+<<<<<<< HEAD
       team: "{{ team }}",
+=======
+      team: team,
+>>>>>>> 4783836 (fixing navbar)
       helper: helperName
     });
   }

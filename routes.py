@@ -8,6 +8,7 @@ from utils import generate_team_code, initialize_hex_game, reset_full_game
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    session.clear()
     return render_template('index.html')
 
 # ----------توليد لعبة جديدة---------------
@@ -25,13 +26,19 @@ def login():
 
         if username == "admin" and password == "adminpass":
             session['username'] = username
+            session['logged_in'] = True
+            # لما يسجل دخول يمسح علامة اللعبة لو موجودة
+            session.pop('in_game', None)
             return redirect(url_for('dashboard'))
         elif username == "user" and password == "user":
             session['username'] = username
+            session['logged_in'] = True
+            # لما يسجل دخول يمسح علامة اللعبة لو موجودة
+            session.pop('in_game', None)
             return redirect(url_for('contestant'))
         else:
             flash("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
-            return render_template('login.html')
+            return redirect(url_for('login'))
     return render_template('login.html')
 
 @app.route('/admin', endpoint='admin_page')
@@ -46,6 +53,7 @@ def admin_page():
 
 @app.route('/admin/start_game')
 def start_game():
+    
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -59,18 +67,20 @@ def contestant():
 
 @app.route('/dashboard')
 def dashboard():
-    if 'username' not in session:
+  if not session.get('logged_in'):
         return redirect(url_for('login'))
-    return render_template('dashboard.html', username=session['username'])
+  return render_template('dashboard.html', username=session.get('username'))
+
 
 # ------- تعبئة حقول ببيانت اللعبة json --------
 @app.route('/hex-game')
 def hex_game():
+   
     try:
-        if not os.path.exists("teams_data.json"):
+        if not os.path.exists("data/teams_data.json"):
             initialize_hex_game()
         
-        with open('teams_data.json', 'r', encoding='utf-8') as f:
+        with open('data/teams_data.json', 'r', encoding='utf-8') as f:
             game_data = json.load(f)
             red_code = game_data.get('red', {}).get('code', '')
             blue_code = game_data.get('blue', {}).get('code', '')
@@ -87,7 +97,7 @@ def hex_game():
             if not selected_letters:
                 selected_letters = random.sample(list("أبجدھوزحطيكلمنسعفصقرشتثخذضظغ"), 25)
                 game_data["letters"] = selected_letters
-                with open('teams_data.json', 'w', encoding='utf-8') as f2:
+                with open('data/teams_data.json', 'w', encoding='utf-8') as f2:
                     json.dump(game_data, f2, ensure_ascii=False, indent=4)
 
     except FileNotFoundError:
@@ -112,7 +122,7 @@ def logout():
 @app.route('/participant/<code>')
 def participant(code):
     try:
-        with open('teams_data.json', encoding='utf-8') as f:
+        with open('data/teams_data.json', encoding='utf-8') as f:
             game_data = json.load(f)
     except FileNotFoundError:
         flash('لا توجد لعبة حالياً.')
@@ -127,7 +137,7 @@ def participant(code):
 
     team = 'red' if code == red_code else 'blue'
     session['team'] = team
-
+    session['is_participant'] = True  # ← مهم
     return render_template('participant.html', code=code, team=team)
 
 @app.route('/join', methods=['GET', 'POST'])
@@ -136,7 +146,7 @@ def join_game():
     if request.method == 'POST':
         code = request.form['code'].strip()
         try:
-            with open('teams_data.json', encoding='utf-8') as f:
+            with open('data/teams_data.json', encoding='utf-8') as f:
                 game_data = json.load(f)
         except FileNotFoundError:
             error = 'لا توجد لعبة حالياً.'

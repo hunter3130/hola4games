@@ -3,7 +3,7 @@ from app import socketio
 import json
 from utils import use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_buzzer_pressed
 
-TEAM_DATA_FILE = 'teams_data.json'  # <-- تم التعديل هنا
+TEAM_DATA_FILE = 'data/teams_data.json'  # <-- تم التعديل هنا
 
 def read_team_data():
     with open(TEAM_DATA_FILE, 'r', encoding='utf-8') as f:

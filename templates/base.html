@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ هذه الإضافة -->
     <title>{% block title %}لوحة التحكم{% endblock %}</title>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+   
     {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
 <nav class="navbar">
   <div class="welcome-msg">
-      {% if session.get('username') %}
+      {% if session.get('logged_in') %}
           مرحباً {{ session['username'] }}
       {% elif session.get('is_participant') %}
           مرحباً متسابق
@@ -20,18 +20,38 @@
           مرحباً زائر
       {% endif %}
   </div>
+  <ul>
+    {% if request.endpoint == 'login' %}
+      <li>
+        <a href="{{ url_for('index') }}" class="logout-link">🏠 الصفحة الرئيسية</a>
+      </li>
+    
+    {% elif session.get('logged_in') %}
+      <li>
+        <a href="{{ url_for('dashboard') }}" class="logout-link">🏠 الصفحة الرئيسية</a>
+      </li>
+      <li>
+        <a href="{{ url_for('logout') }}" class="logout-link">تسجيل الخروج</a>
+      </li>
 
-  {% if session.get('username') %}
-      <a href="{{ url_for('logout') }}" class="logout-link">تسجيل الخروج</a>
-  {% elif not session.get('is_participant') %}
-      <a href="{{ url_for('login') }}" class="logout-link">تسجيل الدخول</a>
-  {% endif %}
+    {% elif session.get('in_game') %}
+      <li>
+        <a href="{{ url_for('index') }}" class="logout-link">🏠 الصفحة الرئيسية</a>
+      </li>
+
+    {% else %}
+      <li>
+        <a href="{{ url_for('login') }}" class="logout-link">تسجيل الدخول</a> 
+      </li>
+    {% endif %}
+  </ul>
 </nav>
+
 
 
     <div class="content">
         {% block content %}{% endblock %}
     </div>
- 
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </body>
 </html>

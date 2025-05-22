@@ -1,24 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}لوحة التحكم{% endblock %}
 {% block content %}
-    <div class="container">
-        <h1 class="page-title">اختر اللعبة</h1>
-        <div class="card-container">
-            <div class="card" onclick="window.location='{{ url_for('start_new_game') }}'">
-                <img src="{{ url_for('static', filename='imgs/hex-logo.png') }}" alt="Hex Game">
-                <h2>Hex Game</h2>
-                <p>اللعبة الاستراتيجية المشوقة.</p>
-            </div>
-            <div class="card" onclick="window.location='{{ url_for('four_in_row') }}'">
-                <img src="{{ url_for('static', filename='imgs/four-in-row-logo.PNG') }}" alt="Four in Row">
+<div class="container">
+    <h1>أهلاً، {{ username }}</h1>
+    <h2 class="page-title">اختر اللعبة</h2>
 
-                <h2>Four in Row</h2>
-                <p>اللعبة التي تعتمد على التفكير السريع.</p>
-            </div>
-        </div>
+    <div class="card-container">
+        <a href="{{ url_for('start_new_game') }}" class="card" role="button" tabindex="0">
+            <img src="{{ url_for('static', filename='imgs/hex-logo.png') }}" alt="Hex Game">
+            <h3>Hex Game</h3>
+            <p>اللعبة الاستراتيجية المشوقة.</p>
+        </a>
+        <a href="{{ url_for('four_in_row') }}" class="card" role="button" tabindex="0">
+            <img src="{{ url_for('static', filename='imgs/four-in-row-logo.PNG') }}" alt="Four in Row">
+            <h3>Four in Row</h3>
+            <p>اللعبة التي تعتمد على التفكير السريع.</p>
+        </a>
     </div>
-<h1>أهلاً، {{ username }}</h1>
-    <style>
-        
-    </style>
+</div>
 {% endblock %}

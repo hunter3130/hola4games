@@ -31,18 +31,40 @@ body {
     transition: 0.3s;
 }
 
-.navbar a:hover {
+.navbar a:hover,
+.navbar a:focus {
     background-color: #1abc9c;
+    outline: none;
 }
 
 .welcome-msg {
     font-size: 16px;
+    padding-right: 10px;
 }
 
 .content {
     padding: 10px;
 }
 
+/* ✅ إخفاء النقط من قائمة التنقل */
+.navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.navbar li {
+    list-style: none;
+}
+
+/* تركيز الحقول والأزرار */
+input:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 5px #1abc9c;
+}
 
 /* ✅ تسجيل الدخول */
 body.login-page .login-container {
@@ -86,7 +108,6 @@ body.login-page .login-form button:hover {
     background-color: #34495e;
 }
 
-
 /* ✅ إدخال كود اللعبة */
 body.join-game-page form {
     max-width: 400px;
@@ -109,7 +130,8 @@ body.join-game-page form input[type="text"] {
     text-align: left;
 }
 
-body.join-game-page form button {
+body.join-game-page form button,
+.btn-join {
     width: 100%;
     padding: 12px;
     background-color: #28a745;
@@ -121,7 +143,8 @@ body.join-game-page form button {
     transition: background-color 0.3s ease;
 }
 
-body.join-game-page form button:hover {
+body.join-game-page form button:hover,
+.btn-join:hover {
     background-color: #218838;
 }
 
@@ -130,103 +153,289 @@ body.join-game-page .flash p {
     text-align: center;
     margin-bottom: 10px;
 }
+
+/* صفحة المتسابق */
 body.participant-page .container {
-  max-width: 700px;
-  margin: 30px auto;
-  text-align: center;
+    max-width: 700px;
+    margin: 30px auto;
+    text-align: center;
 }
 
 body.participant-page .team-card {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 body.participant-page .team-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 body.participant-page .team-code {
-  font-size: 18px;
-  color: #555;
+    font-size: 18px;
+    color: #555;
 }
 
 body.participant-page .helper-card {
-  display: inline-block;
-  margin: 10px;
-  padding: 12px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background-color: #34495e;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s;
+    display: inline-block;
+    margin: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #34495e;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 body.participant-page .helper-card:hover {
-  background-color: #2c3e50;
+    background-color: #2c3e50;
 }
 
 body.participant-page .disabled-card {
-  background-color: #ccc;
-  cursor: not-allowed;
+    background-color: #ccc;
+    cursor: not-allowed;
 }
+
+/* الحاويات وبطاقات العرض */
 .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px;
-        }
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+}
 
-        .page-title {
-            text-align: center;
-            font-size: 30px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
+.page-title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: #2c3e50;
+}
 
-        .card-container {
-            display: flex;
-            justify-content: space-around;
-            gap: 30px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
+.card-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
 
-        .card {
-            background-color: #ffffff;
-            width: 300px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+.card {
+    background-color: #ffffff;
+    width: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 12px rgba(0,0,0,0.2);
-        }
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+}
 
-        .card img {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
+.card img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
 
-        .card h2 {
-            font-size: 22px;
-            color: #2c3e50;
-            margin-top: 15px;
-        }
+.card h2 {
+    font-size: 22px;
+    color: #2c3e50;
+    margin-top: 15px;
+}
 
-        .card p {
-            color: #7f8c8d;
-            font-size: 16px;
-        }
+.card p {
+    color: #7f8c8d;
+    font-size: 16px;
+}
+
+/* تنسيقات الحقول والأزرار المستخدمة */
+.input-code {
+    padding: 10px;
+    width: 80%;
+    max-width: 300px;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.btn-join {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* تأثير hover للزر */
+.btn-join:hover {
+    background-color: #0056b3;
+}
+
+/* ===== استجابة التصميم (Responsive) ===== */
+@media (max-width: 600px) {
+    .navbar ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .card-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* تحسين الرسائل */
+.flash-error {
+    color: red;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* عناصر مخفية ولكن للـ screen readers */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    border: 0 !important;
+}
+
+/* تأثير التركيز على الحقول */
+.login-form input:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 5px #1abc9c;
+    outline: none;
+}
+
+/* تحسين الزر عند الضغط */
+.btn-login:active {
+    background-color: #16a085;
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+.join-title {
+    font-size: 32px;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 30px;
+    animation: glow 2.5s ease-in-out infinite;
+    position: relative;
+}
+
+#game-icon {
+    display: inline-block;
+    font-size: 1.2em;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+/* توهج ناعم */
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 0 5px #1abc9c, 0 0 10px #1abc9c;
+    }
+    50% {
+        text-shadow: 0 0 10px #16a085, 0 0 20px #16a085;
+    }
+}
+/* صفحة إدخال كود اللعبة */
+body.join-game-page {
+  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.join-game-page h1 {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+#game-icon {
+  font-size: 2.8rem;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.join-form {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.input-code {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1.3rem;
+  border: 2px solid #74ebd5;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+}
+
+.input-code:focus {
+  border-color: #ACB6E5;
+  outline: none;
+  box-shadow: 0 0 8px #ACB6E5;
+}
+
+.btn-join {
+  margin-top: 25px;
+  padding: 14px 0;
+  background-color: #74ebd5;
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.4rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 4px 10px rgba(116,235,213,0.6);
+}
+
+.btn-join:hover {
+  background-color: #4ac6b8;
+  color: #fff;
+  box-shadow: 0 6px 15px rgba(74,198,184,0.8);
+}
+
+.flash p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ff4c4c;
+  margin-top: 15px;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}

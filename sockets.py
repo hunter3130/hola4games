@@ -6,12 +6,22 @@ from utils import use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_b
 TEAM_DATA_FILE = 'data/teams_data.json'  # <-- تم التعديل هنا
 
 def read_team_data():
-    with open(TEAM_DATA_FILE, 'r', encoding='utf-8') as f:
-        return json.load(f)
+    try:
+        with open(TEAM_DATA_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # لو الملف مش موجود أو فيه خطأ ارجع بيانات أولية
+        return {
+            "red": {"helpers": {}},
+            "blue": {"helpers": {}}
+        }
 
 def write_team_data(data):
-    with open(TEAM_DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    try:
+        with open(TEAM_DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error writing team data: {e}")
 
 @socketio.on("helper_used")
 def handle_helper_used(data):
@@ -22,6 +32,9 @@ def handle_helper_used(data):
         return
 
     team_data = read_team_data()
+
+    if team not in team_data:
+        return
 
     # تحقق من أن المساعدة لم تُستخدم من قبل
     if team_data[team]["helpers"].get(helper, False):

@@ -89,33 +89,6 @@
   </div>
 </div>
 
-<style>
-
-  /* تنسيق البطاقات */
-
-
-.help-card {
-  padding: 8px 12px;
-  background: white;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: bold;
-  width: 100%;
-  box-sizing: border-box;
-}
-.help-card:disabled {
-  background: #f8d7da;
-  border-color: #dc3545;
-  text-decoration: line-through;
-  cursor: not-allowed;
-  color: #a94442;
-}
-.help-card:hover:not(:disabled) {
-  background-color: #f0f0f0;
-}
-</style>
 
 <script>
 const socket = io();

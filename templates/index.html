@@ -3,8 +3,11 @@
 {% block body_class %}join-game-page{% endblock %}
 
 {% block content %}
-<h1>أدخل كود اللعبة</h1>
 
+<body>
+  <h1 class="join-title">
+  <span id="game-icon">🎮</span> أدخل كود اللعبة
+  </h1>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <div class="flash">
@@ -15,13 +18,28 @@
   {% endif %}
 {% endwith %}
 
-<form method="POST" action="{{ url_for('join_game') }}">
-    <input type="text" name="code" placeholder="أدخل الكود هنا" required />
+<form method="POST" action="{{ url_for('join_game') }}" class="join-form">
+    <input type="text" name="code" placeholder="أدخل الكود هنا" required class="input-code" />
     <br />
-    <button type="submit">دخول اللعبة</button>
+    <button type="submit" class="btn-join">دخول اللعبة</button>
 </form>
 
 {% if error %}
     <p style="color:red; margin-top: 15px;">{{ error }}</p>
 {% endif %}
+</body>
+<script>
+  const icons = ['🎮', '🕹️', '👾', '⚔️', '🎲', '🧩'];
+  let current = 0;
+  setInterval(() => {
+    current = (current + 1) % icons.length;
+    const iconEl = document.getElementById('game-icon');
+    // تأثير حركة دوران صغير عند التغيير
+    iconEl.style.transform = 'rotate(20deg)';
+    setTimeout(() => {
+      iconEl.textContent = icons[current];
+      iconEl.style.transform = 'rotate(0deg)';
+    }, 150);
+  }, 1000);
+</script>
 {% endblock %}

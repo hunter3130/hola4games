@@ -5,22 +5,26 @@
 
 {% block content %}
 <div class="login-container">
-    <form method="POST" action="/login" class="login-form">
+    <form method="POST" action="/login" class="login-form" autocomplete="off" novalidate>
         <h2>تسجيل الدخول</h2>
 
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <div class="flash-messages">
               {% for message in messages %}
-                <p style="color:red;">{{ message }}</p>
+                <p class="flash-error">{{ message }}</p>
               {% endfor %}
             </div>
           {% endif %}
         {% endwith %}
 
-        <input type="text" name="username" placeholder="اسم المستخدم" required>
-        <input type="password" name="password" placeholder="كلمة المرور" required>
-        <button type="submit">دخول</button>
+        <label for="username" class="sr-only">اسم المستخدم</label>
+        <input id="username" type="text" name="username" placeholder="اسم المستخدم" required aria-label="اسم المستخدم" autocomplete="username">
+
+        <label for="password" class="sr-only">كلمة المرور</label>
+        <input id="password" type="password" name="password" placeholder="كلمة المرور" required aria-label="كلمة المرور" autocomplete="current-password">
+
+        <button type="submit" class="btn-login">دخول</button>
     </form>
 </div>
 {% endblock %}

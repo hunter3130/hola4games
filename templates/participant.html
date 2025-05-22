@@ -10,26 +10,10 @@
 
   <h1 class="welcome-text">مرحباً بك في اللعبة</h1>
 
-<<<<<<< HEAD
-  <div class="team-cards">
-    {% if team == 'red' %}
-      <div class="team-card" style="border-top: 5px solid #e74c3c;">
-        <div class="team-name">الفريق الأحمر</div>
-        <div class="team-code">{{ code }}</div>
-      </div>
-    {% elif team == 'blue' %}
-      <div class="team-card" style="border-top: 5px solid #3498db;">
-        <div class="team-name">الفريق الأزرق</div>
-        <div class="team-code">{{ code }}</div>
-      </div>
-    {% else %}
-      <div>أنت لم تنضم لأي فريق</div>
-    {% endif %}
+  <!-- حذف العرض الثابت لبطاقة الفريق وحطينا مكانه div فاضي بنعرض فيه بالجافاسكريبت -->
+  <div id="team-cards-container" class="team-cards">
+    <!-- هنا هيتعرض محتوى بطاقة الفريق بالديناميكي -->
   </div>
-=======
-  <!-- مكان عرض بطاقة الفريق -->
-  <div class="team-cards" id="team-cards-container"></div>
->>>>>>> 4783836 (fixing navbar)
 
   <!-- بطاقات وسائل المساعدة -->
   <div class="helpers-container">
@@ -45,19 +29,15 @@
 <script>
   const socket = io();
 
-  // بيانات السيرفر أول مرة
-  const serverTeam = "{{ team }}";
-  const serverCode = "{{ code }}";
+  // قراءة بيانات الفريق والكود من localStorage أو من السيرفر
+  const team = localStorage.getItem("team") || "{{ team }}";
+  const code = localStorage.getItem("code") || "{{ code }}";
 
-  // حفظ البيانات في localStorage لو مش موجودة أصلاً
+  // تخزين البيانات في localStorage لو مش موجودة أصلاً
   if (!localStorage.getItem("team")) {
-    localStorage.setItem("team", serverTeam);
-    localStorage.setItem("code", serverCode);
+    localStorage.setItem("team", team);
+    localStorage.setItem("code", code);
   }
-
-  // قراءة البيانات من localStorage أو من السيرفر كبديل
-  const team = localStorage.getItem("team") || serverTeam;
-  const code = localStorage.getItem("code") || serverCode;
 
   // دالة لعرض بطاقة الفريق حسب الفريق الحالي
   function renderTeamCard() {
@@ -102,11 +82,7 @@
     card.disabled = true;
 
     socket.emit("helper_used", {
-<<<<<<< HEAD
-      team: "{{ team }}",
-=======
       team: team,
->>>>>>> 4783836 (fixing navbar)
       helper: helperName
     });
   }
@@ -128,10 +104,9 @@
   // استقبال حدث الضغط من السيرفر
   socket.on("buzz", (data) => {
     const winner = data.team;
-    const myTeam = team;
 
     const buzzerBtn = document.getElementById("buzzer-button");
-    if (myTeam !== winner) {
+    if (team !== winner) {
       buzzerBtn.disabled = true;
       buzzerBtn.innerText = "⛔ انتهى الوقت";
     }

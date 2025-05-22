@@ -15,6 +15,8 @@ def index():
 @app.route('/start_new_game')
 def start_new_game():
     red_code, blue_code, letters, buzzer_pressed, helpers = initialize_hex_game()
+    session['red_code'] = red_code
+    session['blue_code'] = blue_code
     flash("✅ تم إنشاء لعبة جديدة بنجاح")
     return redirect(url_for('hex_game'))
 
@@ -27,13 +29,12 @@ def login():
         if username == "admin" and password == "adminpass":
             session['username'] = username
             session['logged_in'] = True
-            # لما يسجل دخول يمسح علامة اللعبة لو موجودة
+            session['admin'] = True
             session.pop('in_game', None)
             return redirect(url_for('dashboard'))
         elif username == "user" and password == "user":
             session['username'] = username
             session['logged_in'] = True
-            # لما يسجل دخول يمسح علامة اللعبة لو موجودة
             session.pop('in_game', None)
             return redirect(url_for('contestant'))
         else:
@@ -43,43 +44,39 @@ def login():
 
 @app.route('/admin', endpoint='admin_page')
 def admin_page():
-    if 'admin' not in session:
+    if not session.get('admin'):
         return redirect(url_for('login'))
-    else:
-        if 'red_code' not in session or 'blue_code' not in session:
-            session['red_code'] = generate_team_code()
-            session['blue_code'] = generate_team_code()
-        return render_template('admin.html', red_code=session['red_code'], blue_code=session['blue_code'])
+    if 'red_code' not in session or 'blue_code' not in session:
+        session['red_code'] = generate_team_code()
+        session['blue_code'] = generate_team_code()
+    return render_template('admin.html', red_code=session['red_code'], blue_code=session['blue_code'])
 
 @app.route('/admin/start_game')
 def start_game():
-    
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    red_code, blue_code = initialize_hex_game()
-
+    red_code, blue_code, letters, buzzer_pressed, helpers = initialize_hex_game()
     return render_template('hex_game.html', red_code=red_code, blue_code=blue_code)
 
 @app.route('/contestant')
 def contestant():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     return render_template('participant.html', team=session.get('team'))
 
 @app.route('/dashboard')
 def dashboard():
-  if not session.get('logged_in'):
+    if not session.get('logged_in'):
         return redirect(url_for('login'))
-  return render_template('dashboard.html', username=session.get('username'))
+    return render_template('dashboard.html', username=session.get('username'))
 
-
-# ------- تعبئة حقول ببيانت اللعبة json --------
 @app.route('/hex-game')
 def hex_game():
-   
     try:
         if not os.path.exists("data/teams_data.json"):
             initialize_hex_game()
-        
+
         with open('data/teams_data.json', 'r', encoding='utf-8') as f:
             game_data = json.load(f)
             red_code = game_data.get('red', {}).get('code', '')
@@ -137,7 +134,7 @@ def participant(code):
 
     team = 'red' if code == red_code else 'blue'
     session['team'] = team
-    session['is_participant'] = True  # ← مهم
+    session['is_participant'] = True
     return render_template('participant.html', code=code, team=team)
 
 @app.route('/join', methods=['GET', 'POST'])
@@ -160,7 +157,7 @@ def join_game():
             session['is_participant'] = True
             return redirect(url_for('participant', code=code))
 
-        elif code == game_data.get('blue_code'):
+        elif code == blue_code:
             session['team'] = 'blue'
             session['is_participant'] = True
             return redirect(url_for('participant', code=code))
@@ -169,4 +166,3 @@ def join_game():
             error = '❌ كود غير صحيح'
 
     return render_template('index.html', error=error)
-

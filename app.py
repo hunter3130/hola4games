@@ -11,7 +11,5 @@ socketio = SocketIO(app)
 from routes import *
 from sockets import *
 
-
-
 if __name__ == '__main__':
     socketio.run(app, debug=True)

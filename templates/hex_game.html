@@ -55,12 +55,12 @@
       <h3 style="margin-bottom: 10px;">🔵 الفريق الثاني</h3>
       <p>كود الفريق الأزرق: <strong>{{ blue_code }}</strong></p>
      <div class="helps blue-team" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-  <button class="help-card" data-help="pirate">🏴‍☠️ تحدي القرصان</button>
-  <button class="help-card" data-help="balloon">🎈 تحدي البالون</button>
-  <button class="help-card" data-help="change_question">🔄 تغيير السؤال</button>
-  <button class="help-card" data-help="hint">💡 تلميح</button>
-  <button class="help-card" data-help="red_card">🔴 كرت أحمر</button>
-</div>
+        <button class="help-card" data-help="pirate">🏴‍☠️ تحدي القرصان</button>
+        <button class="help-card" data-help="balloon">🎈 تحدي البالون</button>
+        <button class="help-card" data-help="change_question">🔄 تغيير السؤال</button>
+        <button class="help-card" data-help="hint">💡 تلميح</button>
+        <button class="help-card" data-help="red_card">🔴 كرت أحمر</button>
+      </div>
 
     </div>
 
@@ -72,16 +72,16 @@
     <span class="close">&times;</span>
     <h2>الحرف المختار: <span id="modal-letter" style="color:#007bff; font-size: 48px;"></span></h2>
     <img id="modal-image" src="" alt="صورة الحرف" style="width: 150px; height: 150px; object-fit: contain; margin: 10px 0;" />
-    <p id="modal-question">السؤال هنا...</p>
+     
     <div id="timer" style="display:none; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
       الوقت المتبقي: <span id="timer-value">30</span> ثانية
     </div>
-    <button id="start-timer">ابدأ المؤقت</button>
+    <button id="start-timer" class="btn start-btn">ابدأ المؤقت</button>
     <div style="margin-top: 20px;">
-      <button id="team1" class="team-btn" style="background-color: rgba(110, 0, 0, 0.648);">🔵 الفريق الأول</button>
-      <button id="team2" class="team-btn" style="background-color: rgba(0, 79, 128, 0.803); color: white;">🔶 الفريق الثاني</button>
+      <button id="team1" class="team-btn" style="background-color: rgba(110, 0, 0, 0.648);">🔶 الفريق الثاني</button>
+      <button id="team2" class="team-btn" style="background-color: rgba(0, 79, 128, 0.803); color: white;">🔵 الفريق الأول</button>
       <div style="margin-top: 15px;">
-        <button id="startQuestion" style="margin-left: 5px;">🔹 عرض السؤال</button>
+       
         <button id="resetBuzzer">🔄 إعادة البازر</button>
       </div>
       <div id="buzzerResult" style="margin-top: 10px; font-weight: bold; font-size: 18px;"></div>

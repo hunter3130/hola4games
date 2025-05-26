@@ -1,7 +1,7 @@
 from flask_socketio import emit
 from app import socketio
 import json
-from utils import use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_buzzer_pressed
+from utils import read_cell_states, use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_buzzer_pressed, write_cell_states
 
 TEAM_DATA_FILE = 'data/teams_data.json'  # <-- تم التعديل هنا
 
@@ -66,3 +66,30 @@ def handle_buzz(data):
 def handle_reset_buzzer():
     reset_buzzer()
     emit("buzzer_reset", broadcast=True)
+#------ تحديث اختيار الخلايا --------
+@socketio.on("update_cell")
+def handle_update_cell(data):
+    cell_id = data.get("cellId")
+    state = data.get("state")  # مثلاً {"team": "red", "color": "#f00"}
+
+    if not cell_id or not state:
+        return
+
+    cell_states = read_cell_states()
+    cell_states[cell_id] = state
+    write_cell_states(cell_states)
+
+    emit("cell_updated", {"cellId": cell_id, "state": state}, broadcast=True)
+
+#------- طلب الخلايا -----
+@socketio.on("get_cells")
+def handle_get_cells():
+    cell_states = read_cell_states()
+    emit("cell_states", cell_states)
+
+@socketio.on('connect')
+def handle_connect():
+    with open("buzzer.json") as f:
+        state = json.load(f)
+    emit("initial_state", state)
+

@@ -118,7 +118,7 @@ body.join-game-page form {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-body.join-game-page form input[type="text"] {
+/* body.join-game-page form input[type="text"] {
     width: 100%;
     padding: 12px;
     font-size: 16px;
@@ -128,9 +128,9 @@ body.join-game-page form input[type="text"] {
     margin-bottom: 15px;
     direction: ltr;
     text-align: left;
-}
+} */
 
-body.join-game-page form button,
+/* body.join-game-page form button,
 .btn-join {
     width: 100%;
     padding: 12px;
@@ -141,7 +141,7 @@ body.join-game-page form button,
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
+} */
 
 body.join-game-page form button:hover,
 .btn-join:hover {
@@ -258,6 +258,47 @@ body.participant-page .disabled-card {
     font-size: 16px;
 }
 
+.card-form {
+  display: inline-block;
+}
+
+.card-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 300px;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+}
+
+.card-button img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card-button h3 {
+  font-size: 22px;
+  color: #2c3e50;
+  margin-top: 15px;
+}
+
+.card-button p {
+  color: #7f8c8d;
+  font-size: 16px;
+}
+
 /* تنسيقات الحقول والأزرار المستخدمة */
 .input-code {
     padding: 10px;
@@ -330,9 +371,9 @@ body.participant-page .disabled-card {
 .join-title {
     font-size: 32px;
     text-align: center;
-    color: #2c3e50;
+    color: #169993;
     margin-top: 30px;
-    animation: glow 2.5s ease-in-out infinite;
+    /* animation: glow 2.5s ease-in-out infinite; */
     position: relative;
 }
 
@@ -353,23 +394,27 @@ body.participant-page .disabled-card {
     }
 }
 /* صفحة إدخال كود اللعبة */
-body.join-game-page {
-  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* body.join-game-page {
+  /* background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%); */
+  /* min-height: 100vh; */
+  /* display: flex; */
+  /* flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  justify-content: center; */
+  /* padding: 20px; */
+  /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  }
+  */
+
 
 .join-game-page h1 {
   font-size: 2.5rem;
   color: #fff;
   margin-bottom: 30px;
-  display: flex;
+  /* display: flex; */
+
   align-items: center;
+  text-align: justify;
   gap: 12px;
   text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
@@ -378,6 +423,7 @@ body.join-game-page {
   font-size: 2.8rem;
   transition: transform 0.3s ease;
   display: inline-block;
+   align-items: center;
 }
 
 .join-form {
@@ -401,7 +447,7 @@ body.join-game-page {
   transition: border-color 0.3s ease;
   text-align: center;
   font-weight: bold;
-  letter-spacing: 0.1em;
+  /* letter-spacing: 0.1em; */
 }
 
 .input-code:focus {
@@ -438,4 +484,62 @@ body.join-game-page {
   margin-top: 15px;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.flash-icon {
+  margin-left: 10px;
+  font-size: 20px;
+  color: #856404;
+}
+.flash-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.flash-message {
+  display: inline-flex;
+  align-items: center;
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 12px 18px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.flash-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.flash-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.flash-icon {
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.flash-text {
+  font-weight: bold;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.centered-error {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.centered-error .flash-message {
+  max-width: 400px;
+  width: 100%;
 }

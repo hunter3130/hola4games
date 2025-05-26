@@ -2,20 +2,30 @@
 {% block title %}لوحة التحكم{% endblock %}
 {% block content %}
 <div class="container">
-    <h1>أهلاً، {{ username }}</h1>
-    <h2 class="page-title">اختر اللعبة</h2>
+    
+   <h2 class="page-title">
+   اختر لعبتك المفضلة!
+   🎯
+</h2>
 
     <div class="card-container">
-        <a href="{{ url_for('start_new_game') }}" class="card" role="button" tabindex="0">
-            <img src="{{ url_for('static', filename='imgs/hex-logo.png') }}" alt="Hex Game">
-            <h3>Hex Game</h3>
-            <p>اللعبة الاستراتيجية المشوقة.</p>
-        </a>
-        <a href="{{ url_for('four_in_row') }}" class="card" role="button" tabindex="0">
-            <img src="{{ url_for('static', filename='imgs/four-in-row-logo.PNG') }}" alt="Four in Row">
-            <h3>Four in Row</h3>
-            <p>اللعبة التي تعتمد على التفكير السريع.</p>
-        </a>
+        <!-- Hex Game -->
+        <form action="{{ url_for('start_new_game') }}" method="POST" class="card-form">
+            <button type="submit" class="card-button">
+                <img src="{{ url_for('static', filename='imgs/hex-logo.png') }}" alt="Hex Game">
+                <h3>Hex Game</h3>
+                <p>اللعبة الاستراتيجية المشوقة.</p>
+            </button>
+        </form>
+
+        <!-- Four in Row -->
+        <form action="{{ url_for('four_in_row') }}" method="POST" class="card-form">
+            <button type="submit" class="card-button">
+                <img src="{{ url_for('static', filename='imgs/four-in-row-logo.PNG') }}" alt="Four in Row">
+                <h3>Four in Row</h3>
+                <p>اللعبة التي تعتمد على التفكير السريع.</p>
+            </button>
+        </form>
     </div>
 </div>
 {% endblock %}

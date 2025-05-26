@@ -5,6 +5,7 @@ import os
 
 # ---------- مسارات الملفات ----------
 TEAMS_FILE = "data/teams_data.json"
+CELL_STATE_FILE = 'data/cell_states.json'
 
 # ---------- توليد كود عشوائي للفريق ----------
 def generate_team_code():
@@ -14,6 +15,14 @@ def generate_team_code():
 def initialize_hex_game():
     red_code = generate_team_code()
     blue_code = generate_team_code()
+       # تهيئة الخلايا
+    cell_states = {}
+    for i in range(25):
+        cell_id = f"cell_{i+1}"
+        cell_states[cell_id] = {}
+
+    write_cell_states(cell_states)
+    
     letters = random.sample(list("أبجدھوزحطيكلمنسعفصقرشتثخذضظغ"), 25)
 
     game_data = {
@@ -140,3 +149,17 @@ def any_buzzer_pressed():
         isinstance(data[team], dict) and data[team].get("buzzer_pressed", False)
         for team in data
     )
+#--------  دالة قراءة الخلايا ------------
+def read_cell_states():
+    try:
+        with open(CELL_STATE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+#-------- دالة الكتابة للخلايا
+def write_cell_states(data):
+    try:
+        with open(CELL_STATE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error writing cell states: {e}")

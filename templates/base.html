@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ هذه الإضافة -->
     <title>{% block title %}لوحة التحكم{% endblock %}</title>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
@@ -50,7 +52,29 @@
 
 
     <div class="content">
-        {% block content %}{% endblock %}
+        {% block content %}
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash-message {{ category }}">
+          {% if category == 'success' %}
+            <i class="fas fa-check-circle flash-icon"></i>
+          {% elif category == 'error' %}
+            <i class="fas fa-times-circle flash-icon"></i>
+          {% else %}
+            <i class="fas fa-info-circle flash-icon"></i>
+          {% endif %}
+          <span class="flash-text">{{ message }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
+        {% endblock %}
     </div>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </body>

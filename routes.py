@@ -12,7 +12,7 @@ def index():
     return render_template('index.html')
 
 # ----------توليد لعبة جديدة---------------
-@app.route('/start_new_game')
+@app.route('/start_new_game', methods=['GET', 'POST'])
 def start_new_game():
     red_code, blue_code, letters, buzzer_pressed, helpers = initialize_hex_game()
     session['red_code'] = red_code

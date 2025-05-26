@@ -112,7 +112,7 @@ body.login-page .login-form button:hover {
 body.join-game-page form {
     max-width: 400px;
     margin: 20px auto;
-    background-color: #fff;
+    background-color: #eeeeee;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -145,7 +145,7 @@ body.join-game-page form {
 
 body.join-game-page form button:hover,
 .btn-join:hover {
-    background-color: #218838;
+    background-color: #3daa96;
 }
 
 body.join-game-page .flash p {
@@ -371,7 +371,7 @@ body.participant-page .disabled-card {
 .join-title {
     font-size: 32px;
     text-align: center;
-    color: #169993;
+    color: #000000;
     margin-top: 30px;
     /* animation: glow 2.5s ease-in-out infinite; */
     position: relative;
@@ -409,12 +409,12 @@ body.participant-page .disabled-card {
 
 .join-game-page h1 {
   font-size: 2.5rem;
-  color: #fff;
+  color: #406c99;
   margin-bottom: 30px;
   /* display: flex; */
 
   align-items: center;
-  text-align: justify;
+  text-align: center;
   gap: 12px;
   text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
@@ -459,8 +459,8 @@ body.participant-page .disabled-card {
 .btn-join {
   margin-top: 25px;
   padding: 14px 0;
-  background-color: #74ebd5;
-  color: #2c3e50;
+  background-color: #253e62;
+  color: #ffffff;
   font-weight: 700;
   font-size: 1.4rem;
   border: none;
@@ -472,7 +472,7 @@ body.participant-page .disabled-card {
 }
 
 .btn-join:hover {
-  background-color: #4ac6b8;
+  background-color: #253e62;
   color: #fff;
   box-shadow: 0 6px 15px rgba(74,198,184,0.8);
 }

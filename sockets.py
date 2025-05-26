@@ -2,30 +2,35 @@ from flask_socketio import emit
 from app import socketio
 import json
 from utils import read_cell_states, use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_buzzer_pressed, write_cell_states
+from threading import Lock
 
-TEAM_DATA_FILE = 'data/teams_data.json'  # <-- تم التعديل هنا
+team_data_lock = Lock()
+TEAM_DATA_FILE = 'data/teams_data.json'
 
 def read_team_data():
-    try:
-        with open(TEAM_DATA_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        # لو الملف مش موجود أو فيه خطأ ارجع بيانات أولية
-        return {
-            "red": {"helpers": {}},
-            "blue": {"helpers": {}}
-        }
+    with team_data_lock:
+        try:
+            with open(TEAM_DATA_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                print("Data read:", data)
+                return data
+        except (FileNotFoundError, json.JSONDecodeError):
+            default = {"red": {"helpers": {}}, "blue": {"helpers": {}}}
+            print("Returning default data:", default)
+            return default
 
 def write_team_data(data):
-    try:
-        with open(TEAM_DATA_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"Error writing team data: {e}")
+    with team_data_lock:
+        try:
+            with open(TEAM_DATA_FILE, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+                print("Data written:", data)
+        except Exception as e:
+            print(f"Error writing team data: {e}")
 
 @socketio.on("helper_used")
 def handle_helper_used(data):
-    team = data.get("team")  # 'red' أو 'blue'
+    team = data.get("team")
     helper = data.get("helper")
 
     if not team or not helper:
@@ -36,11 +41,9 @@ def handle_helper_used(data):
     if team not in team_data:
         return
 
-    # تحقق من أن المساعدة لم تُستخدم من قبل
     if team_data[team]["helpers"].get(helper, False):
         return
 
-    # تحديث حالة المساعدة
     team_data[team]["helpers"][helper] = True
     write_team_data(team_data)
 
@@ -89,7 +92,5 @@ def handle_get_cells():
 
 @socketio.on('connect')
 def handle_connect():
-    with open("buzzer.json") as f:
-        state = json.load(f)
+    state = read_team_data()
     emit("initial_state", state)
-

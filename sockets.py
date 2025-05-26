@@ -12,11 +12,9 @@ def read_team_data():
         try:
             with open(TEAM_DATA_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                print("Data read:", data)
                 return data
         except (FileNotFoundError, json.JSONDecodeError):
             default = {"red": {"helpers": {}}, "blue": {"helpers": {}}}
-            print("Returning default data:", default)
             return default
 
 def write_team_data(data):
@@ -32,7 +30,7 @@ def write_team_data(data):
 def handle_helper_used(data):
     team = data.get("team")
     helper = data.get("helper")
-
+    print(f"Helper used by team {team}: {helper}")  # <-- هنا
     if not team or not helper:
         return
 

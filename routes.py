@@ -135,7 +135,18 @@ def participant(code):
     team = 'red' if code == red_code else 'blue'
     session['team'] = team
     session['is_participant'] = True
-    return render_template('participant.html', code=code, team=team)
+
+    # قراءة حالة الفريق من ملف الحالة
+    state_file = 'data/teams_data.json'
+    team_state = {"buzzed": False, "helpers": []}
+
+    if os.path.exists(state_file):
+        with open(state_file, encoding='utf-8') as f:
+            state_data = json.load(f)
+            if team in state_data:
+                team_state = state_data[team]
+
+    return render_template('participant.html', code=code, team=team, game_data=game_data, team_state=team_state)
 
 @app.route('/join', methods=['GET', 'POST'])
 def join_game():

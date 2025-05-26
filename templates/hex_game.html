@@ -94,6 +94,30 @@
 const socket = io();
 const teamName = localStorage.getItem("team_name");  // يأخذ اسم الفريق من التخزين المحلي
 
+// شطب وسائل المساعدة المختارة
+socket.on('helper_update', (data) => {
+  const { team, helper } = data;
+  disableHelper(team, helper);
+});
+socket.on('disable_helper', (data) => {
+  const { team, helper } = data;
+  disableHelper(team, helper);
+});
+
+function disableHelper(team, helper) {
+  const teamCard = team === 'red' 
+    ? document.querySelector('.team-card[style*="#e74c3c"]') 
+    : document.querySelector('.team-card[style*="#3498db"]');
+
+  if (teamCard) {
+    const button = teamCard.querySelector(`.help-card[data-help="${helper}"]`);
+    if (button) {
+      button.disabled = true;
+      button.style.textDecoration = 'line-through';
+    }
+  }
+}
+
 
 // عرض نتيجة البازر
 socket.on("buzz", (data) => {
@@ -120,25 +144,24 @@ socket.on("buzz", (data) => {
 });
 
 // إعادة تعيين البازر
-document.getElementById("resetBuzzer").addEventListener("click", () => {
-  socket.emit("reset_buzzer");
-});
-
-socket.on("buzzer_reset", () => {
-  const msg = document.getElementById("buzzer-winner");
-  if (msg) msg.remove();
-
-  const buzzerResult = document.getElementById("buzzerResult");
-  if (buzzerResult) buzzerResult.innerText = "";
-});
+const resetBtn = document.getElementById("resetBuzzer");
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    socket.emit("reset_buzzer");
+  });
+}
 
 // إرسال البازر من المتسابق
-document.getElementById("buzzer-button").addEventListener("click", () => {
-  if (teamName) {
-    socket.emit("buzz", { team: teamName });
-    document.getElementById("buzzer-button").disabled = true;
-  }
-});
+const buzzerBtn = document.getElementById("buzzer-button");
+if (buzzerBtn) {
+  buzzerBtn.addEventListener("click", () => {
+    if (teamName) {
+      socket.emit("buzz", { team: teamName });
+      buzzerBtn.disabled = true;
+    }
+  });
+}
+
 
 // إظهار العناصر حسب الدور (أدمن/متسابق)
 window.addEventListener("DOMContentLoaded", () => {

@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let timerInterval = null;
   let timeLeft = 5;
   let timerStarted = false;
-const questions = {};
+  const questions = {};
   const boardSize = 5;
   let boardState = Array.from({ length: boardSize }, () =>
     Array(boardSize).fill(null)
@@ -30,8 +30,6 @@ const questions = {};
   const timeoutSound = new Audio("/static/sounds/timeout.mp3");
 
   const buzzerButton = document.getElementById("buzzer-button");
-
-
 
   // ========== دوال التحكم الأساسية ==========
 
@@ -50,10 +48,7 @@ const questions = {};
         clearInterval(timerInterval);
         timeoutSound.play();
 
-        // إظهار رسالة انتهاء الوقت
         buzzerResult.textContent = "انتهى الوقت، لا يمكن اختيار الفريق الآن.";
-
-        // قفل أزرار الفريق مؤقتًا لمنع الاختيار بعد انتهاء الوقت
         document.getElementById("team1").disabled = true;
         document.getElementById("team2").disabled = true;
       }
@@ -72,54 +67,48 @@ const questions = {};
       cell.classList.add("locked");
     });
   }
-// ------ التأكد من الخلايا المختارة------
 
-// عند تحميل الصفحة
-socket.emit("get_cells");
+  // ------ التأكد من الخلايا المختارة------
+  socket.emit("get_cells");
 
-// استرجاع الحالة وتطبيقها
-socket.on("cell_states", function(states) {
+  socket.on("cell_states", function(states) {
     for (const cellId in states) {
-        const cell = document.querySelector(`[data-cell="${cellId}"]`);
-        if (cell) {
-            cell.style.backgroundColor = states[cellId].color;
-            cell.dataset.team = states[cellId].team;
-        }
+      const cell = document.querySelector(`[data-cell="${cellId}"]`);
+      if (cell) {
+        cell.style.backgroundColor = states[cellId].color;
+        cell.dataset.team = states[cellId].team;
+      }
     }
-});
+  });
 
-// لما يتم اختيار خلية (مثال):
-function chooseCell(cell) {
+  function chooseCell(cell) {
     const cellId = cell.dataset.cell;
-    const team = currentTeam;  // مثلاً 'red' أو 'blue'
+    const currentTeam = cell.dataset.team || ""; // تعديل: تعريف المتغير الحالي
+    const team = currentTeam;
     const color = team === "red" ? "#f00" : "#00f";
 
-    // تحديث الواجهة
     cell.style.backgroundColor = color;
     cell.dataset.team = team;
 
-    // إرسال للسيرفر
     socket.emit("update_cell", {
-        cellId: cellId,
-        state: {
-            team: team,
-            color: color
-        }
+      cellId: cellId,
+      state: {
+        team: team,
+        color: color
+      }
     });
-}
+  }
 
-// الاستماع للتحديثات من لاعبين آخرين
-socket.on("cell_updated", function(data) {
+  socket.on("cell_updated", function(data) {
     const cell = document.querySelector(`[data-cell="${data.cellId}"]`);
     if (cell) {
-        cell.style.backgroundColor = data.state.color;
-        cell.dataset.team = data.state.team;
+      cell.style.backgroundColor = data.state.color;
+      cell.dataset.team = data.state.team;
     }
-});
+  });
 
-  // دالة عرض رسالة الفوز في منتصف الشاشة بشكل واضح
   function showWinnerMessage(teamName) {
-    if (document.getElementById("winnerMessage")) return; // تمنع الرسالة من الظهور أكثر من مرة
+    if (document.getElementById("winnerMessage")) return;
     const winnerDiv = document.createElement("div");
     winnerDiv.id = "winnerMessage";
     winnerDiv.classList.add("winner-message");
@@ -127,18 +116,14 @@ socket.on("cell_updated", function(data) {
 
     document.body.appendChild(winnerDiv);
 
-    // تختفي بعد 5 ثواني
     setTimeout(() => {
       if (winnerDiv.parentNode) {
         winnerDiv.parentNode.removeChild(winnerDiv);
       }
     }, 5000);
 
-    // قفل الخلايا ومنع التفاعل
     lockAllCells();
   }
-
-  // ========== دالة الفوز المحسنة مع أخذ إزاحة الصف في الحسبان ==========
 
   function checkWin(teamColor) {
     const visited = Array.from({ length: boardSize }, () =>
@@ -167,7 +152,6 @@ socket.on("cell_updated", function(data) {
         return true;
       }
 
-      // اتجاهات الجيران تعتمد على إذا كان الصف فردي أو زوجي
       const directions = (row % 2 === 0) ?
         [
           [-1, 0], [-1, 1],
@@ -206,8 +190,6 @@ socket.on("cell_updated", function(data) {
     return false;
   }
 
-  // ========== دالة مساعدة لعرض اللوحة ==========
-
   function debugBoard() {
     console.log("حالة اللوحة الحالية:");
     for (let row = 0; row < boardSize; row++) {
@@ -215,16 +197,11 @@ socket.on("cell_updated", function(data) {
     }
   }
 
-
-
-  // ========== دوال المساعدة لتفعيل وتعطيل أزرار الفريق ==========
-
   function enableTeamButtons() {
     document.getElementById("team1").disabled = false;
     document.getElementById("team2").disabled = false;
   }
 
-  // إعادة ضبط المودال (عند فتح السؤال الجديد)
   function resetModal() {
     buzzerResult.textContent = "";
     enableTeamButtons();
@@ -232,93 +209,76 @@ socket.on("cell_updated", function(data) {
     timerContainer.style.display = "none";
   }
 
-  // ========== معالجة النقر على الخلايا ==========
-
   document.querySelectorAll(".hex").forEach(cell => {
     cell.addEventListener("click", () => {
       if (cell.classList.contains("locked")) return;
       currentCell = cell;
       const letter = cell.getAttribute("data-letter");
-  console.log("تم الضغط على خلية بحرف:", letter); // تأكد ان الحدث شغال
-      // عرض الحرف والسؤال في المودال
+      console.log("تم الضغط على خلية بحرف:", letter);
       modalLetter.textContent = letter;
       if (questions[letter]) {
         modalImage.src = "/static/imgs/" + questions[letter].image;
-       // modalQuestion.textContent = questions[letter].question || "سؤال غير متاح.";
       } else {
         modalImage.src = "/static/imgs/notAv.png";
-       // modalQuestion.textContent = "سؤال غير متاح لهذا الحرف.";
       }
 
       resetModal();
       modal.style.display = "flex";
       stopTimer();
-
-      // ======= تم تعطيل إرسال حدث buzz عند فتح الخلية =======
-      // socket.emit("buzz", { team: "المتسابق" });
     });
   });
 
-  // ========== معالجة أحداث اختيار الفرق ==========
-
   document.getElementById("team1").addEventListener("click", () => {
-  if (currentCell && !currentCell.classList.contains("locked")) {
-    const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
-
-    if (boardState[row][col] === null) {
-      boardState[row][col] = "red";
-      currentCell.style.backgroundColor = "#ff4d4d";
-      currentCell.classList.add("locked");
-
-      socket.emit("update_cell", {
-        cellId: `${row}-${col}`,
-        state: {
-          team: "red",
-          color: "#ff4d4d"
-        }
-      });
-
-      if (checkWin("red")) {
-        lockAllCells();
-      }
-    }
-  }
-  stopTimer();
-  modal.style.display = "none";
-  enableTeamButtons();
-});
-
-
- document.getElementById("team2").addEventListener("click", () => {
-  if (currentCell && !currentCell.classList.contains("locked")) {
-    const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
-
-    if (boardState[row][col] === null) {
-        // تعيين اللون الأزرق
-         boardState[row][col] = "blue";
-      currentCell.style.backgroundColor = "#3399ff";
+    if (currentCell && !currentCell.classList.contains("locked")) {
+      const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
+      if (boardState[row][col] === null) {
+        boardState[row][col] = "red";
+        currentCell.style.backgroundColor = "#ff4d4d";
         currentCell.classList.add("locked");
-       
 
-             socket.emit("update_cell", {
-        cellId: `${row}-${col}`,
-        state: {
-          team: "blue",
-          color: "#3399ff"
+        socket.emit("update_cell", {
+          cellId: `${row}-${col}`,
+          state: {
+            team: "red",
+            color: "#ff4d4d"
+          }
+        });
+
+        if (checkWin("red")) {
+          lockAllCells();
         }
-      });
-
-      if (checkWin("blue")) {
-        lockAllCells();
       }
     }
-  }
-  stopTimer();
-  modal.style.display = "none";
-  enableTeamButtons();
-});
+    stopTimer();
+    modal.style.display = "none";
+    enableTeamButtons();
+  });
 
-  // ========== إغلاق المودال ==========
+  document.getElementById("team2").addEventListener("click", () => {
+    if (currentCell && !currentCell.classList.contains("locked")) {
+      const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
+      if (boardState[row][col] === null) {
+        boardState[row][col] = "blue";
+        currentCell.style.backgroundColor = "#3399ff";
+        currentCell.classList.add("locked");
+
+        socket.emit("update_cell", {
+          cellId: `${row}-${col}`,
+          state: {
+            team: "blue",
+            color: "#3399ff"
+          }
+        });
+
+        if (checkWin("blue")) {
+          lockAllCells();
+        }
+      }
+    }
+    stopTimer();
+    modal.style.display = "none";
+    enableTeamButtons();
+  });
 
   closeBtn.onclick = () => {
     modal.style.display = "none";
@@ -334,11 +294,7 @@ socket.on("cell_updated", function(data) {
     }
   };
 
-  // ========== زر بدء المؤقت ==========
-
   startTimerBtn.addEventListener("click", startTimer);
-
-  // ========== إعادة ضبط البازر ==========
 
   resetBuzzerBtn.addEventListener("click", () => {
     buzzerResult.textContent = "";
@@ -348,28 +304,23 @@ socket.on("cell_updated", function(data) {
     timerContainer.style.display = "none";
   });
 
-  // ========== زر بدء السؤال ==========
-
   startQuestionBtn.addEventListener("click", () => {
-    // أعد ضبط المودال والمؤقت والبازر للبدء بسؤال جديد
     resetModal();
   });
-
-  // ========== استقبال حدث البازر من السيرفر ==========
 
   socket.on("buzz", data => {
     buzzerResult.textContent = `الفريق ${data.team} ضغط البازر!`;
     stopTimer();
     disableTeamButtons();
   });
-socket.on("initial_state", data => {
-  if (data.buzzed_team) {
-    buzzerResult.textContent = `الفريق ${data.buzzed_team} ضغط البازر!`;
-    disableTeamButtons();
-  }
-});
 
-  // دالة تعطيل أزرار الفريق بعد البازر
+  socket.on("initial_state", data => {
+    if (data.buzzed_team) {
+      buzzerResult.textContent = `الفريق ${data.buzzed_team} ضغط البازر!`;
+      disableTeamButtons();
+    }
+  });
+
   function disableTeamButtons() {
     document.getElementById("team1").disabled = true;
     document.getElementById("team2").disabled = true;

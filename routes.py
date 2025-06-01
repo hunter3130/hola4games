@@ -14,7 +14,7 @@ def index():
 # ----------توليد لعبة جديدة---------------
 @app.route('/start_new_game', methods=['GET', 'POST'])
 def start_new_game():
-    session.clear()
+    
     red_code, blue_code, letters, buzzer_pressed, helpers = initialize_hex_game()
     session['red_code'] = red_code
     session['blue_code'] = blue_code
@@ -32,6 +32,7 @@ def login():
             session['username'] = username
             session['logged_in'] = True
             session['admin'] = True
+            session['logged_in'] = True
             session.pop('in_game', None)
             return redirect(url_for('dashboard'))
         elif username == "user" and password == "user":

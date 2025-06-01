@@ -30,20 +30,24 @@
     
     {% elif session.get('logged_in') %}
       <li>
-        <a href="{{ url_for('dashboard') }}" class="logout-link">🏠 الصفحة الرئيسية</a>
+        <a href="{{ url_for('dashboard') }}" class="logout-link">
+          <i class="fas fa-home"></i> الصفحة الرئيسية</a>
       </li>
       <li>
-        <a href="{{ url_for('logout') }}" class="logout-link">تسجيل الخروج</a>
+        <a href="{{ url_for('logout') }}" class="logout-link">
+          <i class="fas fa-sign-out-alt"></i> تسجيل الخروج </a>
       </li>
 
     {% elif session.get('in_game') %}
       <li>
-        <a href="{{ url_for('index') }}" class="logout-link">🏠 الصفحة الرئيسية</a>
+        <a href="{{ url_for('index') }}" class="logout-link">
+          <i class="fas fa-home"></i> الصفحة الرئيسية</a>
       </li>
 
     {% else %}
       <li>
-        <a href="{{ url_for('login') }}" class="logout-link">تسجيل الدخول</a> 
+        <a href="{{ url_for('login') }}" class="logout-link">
+          <i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a> 
       </li>
     {% endif %}
   </ul>

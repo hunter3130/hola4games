@@ -8,12 +8,13 @@ from utils import generate_team_code, initialize_hex_game, reset_full_game
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    session.clear()
-    return render_template('index.html')
+      session.clear()
+      return render_template('index.html')
 
 # ----------توليد لعبة جديدة---------------
 @app.route('/start_new_game', methods=['GET', 'POST'])
 def start_new_game():
+    session.clear()
     red_code, blue_code, letters, buzzer_pressed, helpers = initialize_hex_game()
     session['red_code'] = red_code
     session['blue_code'] = blue_code
@@ -22,6 +23,7 @@ def start_new_game():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    session.clear()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -151,6 +153,8 @@ def participant(code):
 @app.route('/join', methods=['GET', 'POST'])
 def join_game():
     error = None
+    session.clear()
+    session['in_game'] = True
     if request.method == 'POST':
         code = request.form['code'].strip()
         try:

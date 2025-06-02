@@ -163,3 +163,67 @@ def write_cell_states(data):
             json.dump(data, f, ensure_ascii=False, indent=2)
     except Exception as e:
         print(f"Error writing cell states: {e}")
+
+
+def check_win_from_json():
+    cell_states = read_cell_states()
+    board_size = 5
+    
+    # تحويل بيانات الخلايا إلى مصفوفة ثنائية الأبعاد
+    board_state = [[None for _ in range(board_size)] for _ in range(board_size)]
+    
+    for cell_id, state in cell_states.items():
+        try:
+            row, col = map(int, cell_id.split('-'))
+            if 0 <= row < board_size and 0 <= col < board_size:
+                board_state[row][col] = state.get('team')
+        except (ValueError, AttributeError):
+            continue
+    
+    # دالة DFS للتحقق من الاتصال
+    def dfs(row, col, team, visited):
+        if (row < 0 or row >= board_size or 
+            col < 0 or col >= board_size or 
+            visited[row][col] or 
+            board_state[row][col] != team):
+            return False
+        
+        visited[row][col] = True
+        
+        # الفوز للفريق الأحمر (من اليسار إلى اليمين)
+        if team == "red" and col == board_size - 1:
+            return True
+        
+        # الفوز للفريق الأزرق (من الأعلى إلى الأسفل)
+        if team == "blue" and row == board_size - 1:
+            return True
+        
+        # اتجاهات الحركة في شبكة سداسية
+        directions = [
+            [-1, 0], [-1, 1],
+            [0, -1], [0, 1],
+            [1, 0], [1, 1]
+        ] if row % 2 == 0 else [
+            [-1, -1], [-1, 0],
+            [0, -1], [0, 1],
+            [1, -1], [1, 0]
+        ]
+        
+        for dr, dc in directions:
+            if dfs(row + dr, col + dc, team, visited):
+                return True
+        return False
+    
+    # التحقق من فوز الفريق الأحمر
+    visited = [[False for _ in range(board_size)] for _ in range(board_size)]
+    for row in range(board_size):
+        if board_state[row][0] == "red" and dfs(row, 0, "red", visited):
+            return "red"
+    
+    # التحقق من فوز الفريق الأزرق
+    visited = [[False for _ in range(board_size)] for _ in range(board_size)]
+    for col in range(board_size):
+        if board_state[0][col] == "blue" and dfs(0, col, "blue", visited):
+            return "blue"
+    
+    return None

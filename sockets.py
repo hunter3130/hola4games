@@ -1,7 +1,7 @@
 from flask_socketio import emit
 from app import socketio
 import json
-from utils import read_cell_states, use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_buzzer_pressed, write_cell_states
+from utils import check_win_from_json, read_cell_states, use_helper, set_buzzer, reset_buzzer, is_buzzer_pressed, any_buzzer_pressed, write_cell_states
 from threading import Lock
 
 team_data_lock = Lock()
@@ -92,3 +92,10 @@ def handle_get_cells():
 def handle_connect():
     state = read_team_data()
     emit("initial_state", state)
+
+@socketio.on("check_win_condition")
+def handle_check_win():
+    winner = check_win_from_json()
+    if winner:
+        emit("game_winner", {"team": winner}, broadcast=True)
+

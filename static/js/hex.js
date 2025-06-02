@@ -67,7 +67,17 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.classList.add("locked");
     });
   }
+// ------ للتحق من الفريق الفايز ------
+socket.on("game_winner", function(data) {
+    const teamName = data.team === "red" ? "الأحمر" : "الأزرق";
+    showWinnerMessage(teamName);
+    lockAllCells();
+});
 
+// يمكنك استدعاء هذه الدالة عند الحاجة للتحقق من الفوز
+function checkWinFromServer() {
+    socket.emit("check_win_condition");
+}
   // ------ التأكد من الخلايا المختارة------
   socket.emit("get_cells");
 
@@ -81,23 +91,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function chooseCell(cell) {
-    const cellId = cell.dataset.cell;
-    const currentTeam = cell.dataset.team || ""; // تعديل: تعريف المتغير الحالي
-    const team = currentTeam;
-    const color = team === "red" ? "#f00" : "#00f";
+function chooseCell(cell, team) {
+  if (!cell || cell.classList.contains("locked")) return;
 
-    cell.style.backgroundColor = color;
-    cell.dataset.team = team;
+  const cellId = cell.dataset.cell;
+  const color = team === "red" ? "#ff4d4d" : "#3399ff";
+  
+  // تحديث حالة اللوحة المحلية
+  const [row, col] = cellId.split("-").map(Number);
+  boardState[row][col] = team;
+  
+  // تحديث الواجهة
+  cell.style.backgroundColor = color;
+  cell.dataset.team = team;
+  cell.classList.add("locked");
 
-    socket.emit("update_cell", {
-      cellId: cellId,
-      state: {
-        team: team,
-        color: color
-      }
-    });
-  }
+  // إرسال التحديث للسيرفر
+  socket.emit("update_cell", {
+    cellId: cellId,
+    state: {
+      team: team,
+      color: color
+    }
+  });
+
+  // التحقق من الفوز
+  checkWin(team);
+  socket.emit("check_win_condition");
+}
 
   socket.on("cell_updated", function(data) {
     const cell = document.querySelector(`[data-cell="${data.cellId}"]`);
@@ -228,57 +249,72 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // document.getElementById("team1").addEventListener("click", () => {
+  //   if (currentCell && !currentCell.classList.contains("locked")) {
+  //     const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
+  //     if (boardState[row][col] === null) {
+  //       boardState[row][col] = "red";
+  //       currentCell.style.backgroundColor = "#ff4d4d";
+  //       currentCell.classList.add("locked");
+
+  //       socket.emit("update_cell", {
+  //         cellId: `${row}-${col}`,
+  //         state: {
+  //           team: "red",
+  //           color: "#ff4d4d"
+  //         }
+  //       });
+
+  //       if (checkWin("red")) {
+  //         lockAllCells();
+  //       }
+  //     }
+  //   }
+  //   stopTimer();
+  //   modal.style.display = "none";
+  //   enableTeamButtons();
+  // });
+
+  // document.getElementById("team2").addEventListener("click", () => {
+  //   if (currentCell && !currentCell.classList.contains("locked")) {
+  //     const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
+  //     if (boardState[row][col] === null) {
+  //       boardState[row][col] = "blue";
+  //       currentCell.style.backgroundColor = "#3399ff";
+  //       currentCell.classList.add("locked");
+
+  //       socket.emit("update_cell", {
+  //         cellId: `${row}-${col}`,
+  //         state: {
+  //           team: "blue",
+  //           color: "#3399ff"
+  //         }
+  //       });
+
+  //       if (checkWin("blue")) {
+  //         lockAllCells();
+  //       }
+  //     }
+  //   }
+  //   stopTimer();
+  //   modal.style.display = "none";
+  //   enableTeamButtons();
+  // });
+
+
   document.getElementById("team1").addEventListener("click", () => {
-    if (currentCell && !currentCell.classList.contains("locked")) {
-      const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
-      if (boardState[row][col] === null) {
-        boardState[row][col] = "red";
-        currentCell.style.backgroundColor = "#ff4d4d";
-        currentCell.classList.add("locked");
-
-        socket.emit("update_cell", {
-          cellId: `${row}-${col}`,
-          state: {
-            team: "red",
-            color: "#ff4d4d"
-          }
-        });
-
-        if (checkWin("red")) {
-          lockAllCells();
-        }
-      }
-    }
-    stopTimer();
+  if (currentCell) {
+    chooseCell(currentCell, "red");
     modal.style.display = "none";
-    enableTeamButtons();
-  });
+  }
+});
 
-  document.getElementById("team2").addEventListener("click", () => {
-    if (currentCell && !currentCell.classList.contains("locked")) {
-      const [row, col] = currentCell.getAttribute("data-cell").split("-").map(Number);
-      if (boardState[row][col] === null) {
-        boardState[row][col] = "blue";
-        currentCell.style.backgroundColor = "#3399ff";
-        currentCell.classList.add("locked");
-
-        socket.emit("update_cell", {
-          cellId: `${row}-${col}`,
-          state: {
-            team: "blue",
-            color: "#3399ff"
-          }
-        });
-
-        if (checkWin("blue")) {
-          lockAllCells();
-        }
-      }
-    }
-    stopTimer();
+document.getElementById("team2").addEventListener("click", () => {
+  if (currentCell) {
+    chooseCell(currentCell, "blue");
     modal.style.display = "none";
-    enableTeamButtons();
-  });
+  }
+});
 
   closeBtn.onclick = () => {
     modal.style.display = "none";

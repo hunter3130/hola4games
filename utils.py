@@ -2,6 +2,10 @@ import random
 import string
 import json
 import os
+import threading
+
+# Lock for thread-safe team data access
+team_data_lock = threading.Lock()
 
 # ---------- مسارات الملفات ----------
 TEAMS_FILE = "data/teams_data.json"
@@ -74,6 +78,19 @@ def reset_full_game():
     save_teams_data(data)
     return red_code, blue_code, letters, {"red": False, "blue": False}, {}
 
+def read_team_data():
+    with team_data_lock:
+        try:
+            with open(TEAMS_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                # التأكد من وجود الهيكل الأساسي إذا كان الملف فارغاً
+                if "red" not in data:
+                    data["red"] = {"helpers": default_helpers()}
+                if "blue" not in data:
+                    data["blue"] = {"helpers": default_helpers()}
+                return data
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {"red": {"helpers": default_helpers()}, "blue": {"helpers": default_helpers()}}
 # ---------- تحميل بيانات الفرق ----------
 def load_teams_data():
     if not os.path.exists(TEAMS_FILE):

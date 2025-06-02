@@ -18,11 +18,11 @@
   <!-- بطاقات وسائل المساعدة -->
 <div class="helpers-container">
   {% set helpers = [
-    {'id': 'pirate', 'name': 'تحدي القرصان'},
-    {'id': 'balloon', 'name': 'تحدي البالون'},
-    {'id': 'change_question', 'name': 'تغيير السؤال'},
-    {'id': 'hint', 'name': 'تلميح على الإجابة'},
-    {'id': 'red_card', 'name': 'كرت أحمر'}]
+    {'id': 'تحدي القرصان', 'name': 'تحدي القرصان'},
+    {'id': 'تحدي البالون', 'name': 'تحدي البالون'},
+    {'id': 'تغيير السؤال', 'name': 'تغيير السؤال'},
+    {'id': 'تلميح', 'name': 'تلميح '},
+    {'id': 'البطاقة الحمراء', 'name': 'البطاقة الحمراء'}]
   %}
   {% for helper in helpers %}
     <button class="helper-card" id="helper-{{ loop.index }}" onclick="useHelper({{ loop.index }}, '{{ helper.id }}')">
@@ -33,7 +33,31 @@
 
 
 <script>
-  const socket = io();
+ const socket = io();
+// في participant.html داخل script
+socket.on("connect", () => {
+  // طلب الحالة الحالية من السيرفر
+  socket.emit("get_initial_state");
+  socket.emit("get_buzzer_state");
+});
+
+socket.on("initial_state", (data) => {
+  // تحديث واجهة المستخدم بناءً على الحالة الحالية
+  if (data[team]) {
+    Object.entries(data[team].helpers).forEach(([helper, used]) => {
+      if (used) {
+        document.querySelectorAll('.helper-card').forEach((btn) => {
+          if (btn.innerText.includes(helper)) {
+            btn.classList.add("disabled-card");
+            btn.disabled = true;
+            btn.innerText = helper + " ✅";
+          }
+        });
+      }
+    });
+  }
+});
+
 console.log({{ game_data | tojson | safe }});
 console.log({{ team_state | tojson | safe }});
 

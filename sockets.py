@@ -26,6 +26,22 @@ def write_team_data(data):
         except Exception as e:
             print(f"Error writing team data: {e}")
 
+@socketio.on("get_initial_state")
+def handle_get_initial_state():
+    emit("initial_state", read_team_data())
+
+@socketio.on("get_initial_helpers_state")
+def handle_get_initial_helpers_state():
+    team_data = read_team_data()
+    emit("initial_helpers_state", {
+        "red": {
+            "helpers": team_data.get("red", {}).get("helpers", {})
+        },
+        "blue": {
+            "helpers": team_data.get("blue", {}).get("helpers", {})
+        }
+    })
+
 @socketio.on("helper_used")
 def handle_helper_used(data):
     team = data.get("team")

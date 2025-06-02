@@ -21,11 +21,11 @@
       <h3 style="margin-bottom: 10px;">🔴 الفريق الأول</h3>
       <p>كود الفريق الأحمر: <strong>{{ red_code }}</strong></p>
       <div class="helps red-team" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-  <button class="help-card" data-help="pirate">🏴‍☠️ تحدي القرصان</button>
-  <button class="help-card" data-help="balloon">🎈 تحدي البالون</button>
-  <button class="help-card" data-help="change_question">🔄 تغيير السؤال</button>
-  <button class="help-card" data-help="hint">💡 تلميح</button>
-  <button class="help-card" data-help="red_card">🔴 كرت أحمر</button>
+  <button class="help-card" data-help="تحدي القرصان">🏴‍☠️ تحدي القرصان</button>
+  <button class="help-card" data-help="تحدي البالون">🎈 تحدي البالون</button>
+  <button class="help-card" data-help="تغيير السؤال">🔄 تغيير السؤال</button>
+  <button class="help-card" data-help="تلميح">💡 تلميح</button>
+  <button class="help-card" data-help="البطاقة الحمراء">🔴 البطاقة الحمراء</button>
 </div>
 
     </div>
@@ -55,11 +55,11 @@
       <h3 style="margin-bottom: 10px;">🔵 الفريق الثاني</h3>
       <p>كود الفريق الأزرق: <strong>{{ blue_code }}</strong></p>
      <div class="helps blue-team" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-        <button class="help-card" data-help="pirate">🏴‍☠️ تحدي القرصان</button>
-        <button class="help-card" data-help="balloon">🎈 تحدي البالون</button>
-        <button class="help-card" data-help="change_question">🔄 تغيير السؤال</button>
-        <button class="help-card" data-help="hint">💡 تلميح</button>
-        <button class="help-card" data-help="red_card">🔴 كرت أحمر</button>
+        <button class="help-card" data-help="تحدي القرصان">🏴‍☠️ تحدي القرصان</button>
+        <button class="help-card" data-help="تحدي البالون">🎈 تحدي البالون</button>
+        <button class="help-card" data-help="تغيير السؤال">🔄 تغيير السؤال</button>
+        <button class="help-card" data-help="تلميح">💡 تلميح</button>
+        <button class="help-card" data-help="البطاقة الحمراء">🔴 البطاقة الحمراء</button>
       </div>
 
     </div>
@@ -94,6 +94,38 @@
 const socket = io();
 const teamName = localStorage.getItem("team_name");  // يأخذ اسم الفريق من التخزين المحلي
 
+// عند تحميل الصفحة، نطلب الحالة الحالية من السيرفر
+document.addEventListener("DOMContentLoaded", () => {
+    socket.emit("get_initial_helpers_state");
+});
+
+// استقبال الحالة الحالية للمساعدات وتحديث الواجهة
+socket.on("initial_helpers_state", (data) => {
+    updateHelpersUI(data);
+});
+
+// دالة لتحديث واجهة المساعدات بناءً على البيانات
+function updateHelpersUI(helpersData) {
+    // تحديث مساعدات الفريق الأحمر
+    Object.entries(helpersData.red.helpers).forEach(([helper, used]) => {
+        const redHelperBtn = document.querySelector(`.red-team .help-card[data-help="${helper}"]`);
+        if (redHelperBtn && used) {
+            redHelperBtn.disabled = true;
+            redHelperBtn.style.textDecoration = 'line-through';
+            redHelperBtn.innerHTML += ' ✅';
+        }
+    });
+
+    // تحديث مساعدات الفريق الأزرق
+    Object.entries(helpersData.blue.helpers).forEach(([helper, used]) => {
+        const blueHelperBtn = document.querySelector(`.blue-team .help-card[data-help="${helper}"]`);
+        if (blueHelperBtn && used) {
+            blueHelperBtn.disabled = true;
+            blueHelperBtn.style.textDecoration = 'line-through';
+            blueHelperBtn.innerHTML += ' ✅';
+        }
+    });
+}
 // شطب وسائل المساعدة المختارة
 socket.on('helper_update', (data) => {
   const { team, helper } = data;
@@ -141,6 +173,12 @@ socket.on("buzz", (data) => {
   winnerMessage.style.boxShadow = '0 0 20px rgba(0,0,0,0.2)';
   winnerMessage.style.zIndex = 9999;
   document.body.appendChild(winnerMessage);
+  // إزالة الرسالة بعد 5 ثواني
+  setTimeout(() => {
+    if (document.body.contains(winnerMessage)) {
+      document.body.removeChild(winnerMessage);
+    }
+  }, 5000);
 });
 
 // إعادة تعيين البازر

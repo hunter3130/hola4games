@@ -38,7 +38,7 @@
 socket.on("connect", () => {
   // طلب الحالة الحالية من السيرفر
   socket.emit("get_initial_state");
-  socket.emit("get_buzzer_state");
+  
 });
 
 socket.on("initial_state", (data) => {

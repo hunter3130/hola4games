@@ -91,6 +91,9 @@ def read_team_data():
                 return data
         except (FileNotFoundError, json.JSONDecodeError):
             return {"red": {"helpers": default_helpers()}, "blue": {"helpers": default_helpers()}}
+        
+
+        
 # ---------- تحميل بيانات الفرق ----------
 def load_teams_data():
     if not os.path.exists(TEAMS_FILE):

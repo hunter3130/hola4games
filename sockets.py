@@ -30,6 +30,8 @@ def write_team_data(data):
 def handle_get_initial_state():
     emit("initial_state", read_team_data())
 
+
+
 @socketio.on("get_initial_helpers_state")
 def handle_get_initial_helpers_state():
     team_data = read_team_data()

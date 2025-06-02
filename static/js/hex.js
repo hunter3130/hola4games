@@ -237,10 +237,12 @@ function chooseCell(cell, team) {
       const letter = cell.getAttribute("data-letter");
       console.log("تم الضغط على خلية بحرف:", letter);
       modalLetter.textContent = letter;
-      if (questions[letter]) {
-        modalImage.src = "/static/imgs/" + questions[letter].image;
+      if (letter) {
+        modalImage.src = "/static/imgs/" + letter + ".png";
+        console.log( letter);
       } else {
         modalImage.src = "/static/imgs/notAv.png";
+        console.log(letter);
       }
 
       resetModal();

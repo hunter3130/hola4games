@@ -17,6 +17,83 @@ h1 {
   animation: popIn 0.6s ease;
 }
 
+.winner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6); /* رمادي شفاف */
+  z-index: 9998;
+}
+
+.winner-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  z-index: 9999;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.winner-image {
+  max-width: 80vw;
+  max-height: 50vh;
+  margin-bottom: 20px;
+  border-radius: 15px;
+}
+
+.winner-text {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.red-team {
+  color: #e60000;
+}
+
+.blue-team {
+  color: #0055ff;
+}
+
+
+/* <!-- ✅ تنسيق CSS لأزرار صف أفقي --> */
+  #sound-buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: row; /* ✅ صف أفقي */
+    gap: 10px;           /* ✅ تباعد بين الأزرار */
+    flex-wrap: nowrap;   /* ✅ بدون التفاف */
+  }
+
+
+  #sound-buttons button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  #sound-buttons button:hover {
+    background-color: #f8c316;
+  }
 @keyframes popIn {
   0% { opacity: 0; transform: scale(0.9); }
   100% { opacity: 1; transform: scale(1); }

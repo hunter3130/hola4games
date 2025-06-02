@@ -23,5 +23,25 @@
   "cell_22": {},
   "cell_23": {},
   "cell_24": {},
-  "cell_25": {}
+  "cell_25": {},
+  "0-0": {
+    "team": "red",
+    "color": "#ff4d4d"
+  },
+  "0-1": {
+    "team": "red",
+    "color": "#ff4d4d"
+  },
+  "0-2": {
+    "team": "red",
+    "color": "#ff4d4d"
+  },
+  "0-3": {
+    "team": "red",
+    "color": "#ff4d4d"
+  },
+  "0-4": {
+    "team": "red",
+    "color": "#ff4d4d"
+  }
 }

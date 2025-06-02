@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     Array(boardSize).fill(null)
   );
 
+
+
+
   const timeoutSound = new Audio("/static/sounds/timeout.mp3");
 
   const buzzerButton = document.getElementById("buzzer-button");
@@ -129,22 +132,50 @@ function chooseCell(cell, team) {
   });
 
   function showWinnerMessage(teamName) {
-    if (document.getElementById("winnerMessage")) return;
-    const winnerDiv = document.createElement("div");
-    winnerDiv.id = "winnerMessage";
-    winnerDiv.classList.add("winner-message");
-    winnerDiv.textContent = `الفريق ${teamName} فاز! 🎉`;
+  if (document.getElementById("winnerMessage")) return;
 
-    document.body.appendChild(winnerDiv);
+  const winnerDiv = document.createElement("div");
+  winnerDiv.id = "winnerMessage";
+  winnerDiv.classList.add("winner-message");
 
-    setTimeout(() => {
-      if (winnerDiv.parentNode) {
-        winnerDiv.parentNode.removeChild(winnerDiv);
-      }
-    }, 5000);
+  // صورة الفوز
+  const winImage = document.createElement("img");
+  winImage.src = "/static/imgs/winner1.gif";
+  winImage.alt = "Victory";
+  winImage.classList.add("winner-image");
 
-    lockAllCells();
+  // نص الفوز
+  const messageText = document.createElement("div");
+  messageText.textContent = `الفريق ${teamName} فاز! 🎉`;
+  messageText.classList.add("winner-text");
+
+  // أضف لون بناءً على الفريق
+  if (teamName.toLowerCase() === "الأحمر" || teamName.toLowerCase().includes("أحمر")) {
+    messageText.classList.add("red-team");
+  } else if (teamName.toLowerCase() === "الأزرق" || teamName.toLowerCase().includes("أزرق")) {
+    messageText.classList.add("blue-team");
   }
+
+  // ضف العناصر للصفحة
+  winnerDiv.appendChild(winImage);
+  winnerDiv.appendChild(messageText);
+  document.body.appendChild(winnerDiv);
+
+  // صوت الفوز
+  const audio = new Audio("/static/sounds/clabs.mp3");
+  audio.play();
+
+  // إخفاء الرسالة بعد 5 ثواني
+  // setTimeout(() => {
+  //   if (winnerDiv.parentNode) {
+  //     winnerDiv.parentNode.removeChild(winnerDiv);
+  //   }
+  // }, 5000);
+
+  lockAllCells();
+}
+
+
 
   function checkWin(teamColor) {
     const visited = Array.from({ length: boardSize }, () =>

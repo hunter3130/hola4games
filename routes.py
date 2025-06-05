@@ -34,25 +34,23 @@ def login():
             session['admin'] = True
             session['logged_in'] = True
             session.pop('in_game', None)
-            return redirect(url_for('dashboard'))
+            # return redirect(url_for('dashboard'))
+            return "✅ تم تسجيل الدخول كأدمن"
         elif username == "user" and password == "user":
             session['username'] = username
             session['logged_in'] = True
             session.pop('in_game', None)
-            return redirect(url_for('contestant'))
+            # return redirect(url_for('contestant'))
+            return "✅ تم تسجيل الدخول كأدمن"
         else:
             flash("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
-            # return redirect(url_for('login'))
-            return "✅ تم تسجيل الدخول كأدمن"
-
+            return redirect(url_for('login'))
     return render_template('login.html')
 
 @app.route('/admin', endpoint='admin_page')
 def admin_page():
     if not session.get('admin'):
-        return "✅ تم تسجيل الدخول كأدمن"
-
-        # return redirect(url_for('login'))
+        return redirect(url_for('login'))
     if 'red_code' not in session or 'blue_code' not in session:
         session['red_code'] = generate_team_code()
         session['blue_code'] = generate_team_code()

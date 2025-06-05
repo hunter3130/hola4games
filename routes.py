@@ -5,7 +5,9 @@ import json
 import os
 from app import app, socketio
 from utils import generate_team_code, initialize_hex_game, reset_full_game
+from flask_cors import CORS
 
+CORS(app)  # اسمح بجميع الطلبات من أي نطاق
 @app.route('/', methods=['GET', 'POST'])
 def index():
       session.clear()
@@ -34,14 +36,12 @@ def login():
             session['admin'] = True
             session['logged_in'] = True
             session.pop('in_game', None)
-            # return redirect(url_for('dashboard'))
-            return "✅ تم تسجيل الدخول كأدمن"
+            return redirect(url_for('dashboard'))
         elif username == "user" and password == "user":
             session['username'] = username
             session['logged_in'] = True
             session.pop('in_game', None)
-            # return redirect(url_for('contestant'))
-            return "✅ تم تسجيل الدخول كأدمن"
+            return redirect(url_for('contestant'))
         else:
             flash("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
             return redirect(url_for('login'))

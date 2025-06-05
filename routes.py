@@ -42,13 +42,17 @@ def login():
             return redirect(url_for('contestant'))
         else:
             flash("❌ اسم المستخدم أو كلمة المرور غير صحيحة")
-            return redirect(url_for('login'))
+            # return redirect(url_for('login'))
+            return "✅ تم تسجيل الدخول كأدمن"
+
     return render_template('login.html')
 
 @app.route('/admin', endpoint='admin_page')
 def admin_page():
     if not session.get('admin'):
-        return redirect(url_for('login'))
+        return "✅ تم تسجيل الدخول كأدمن"
+
+        # return redirect(url_for('login'))
     if 'red_code' not in session or 'blue_code' not in session:
         session['red_code'] = generate_team_code()
         session['blue_code'] = generate_team_code()
